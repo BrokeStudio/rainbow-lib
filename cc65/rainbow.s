@@ -7,7 +7,8 @@
 ; ################################################################################
 ; INCLUDES
 
-  .include "rainbow-constants.h"
+  .include "rainbow-config.s"
+  .include "rainbow-constants.s"
 
 ; ################################################################################
 ; ALIASES
