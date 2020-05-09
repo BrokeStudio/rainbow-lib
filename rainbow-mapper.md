@@ -1,11 +1,14 @@
-# Rainbow mapper draft
+# Rainbow mapper (draft)
 
-Rainbow or RNBW is a WiFi cartridge board intended for homebrew releases with its own unique mapper assigned to iNES Mapper xxx.  
+Rainbow or RNBW is a cartridge board intended for homebrew releases with its own unique mapper assigned to iNES Mapper xxx.  
+The cartridge was initially designed with WiFi capabilities in mind, but can also be used without it.  
 The board and mapper were designed by Broke Studio which also manufactures the cartridges.  
+
+**This is a first draft of the mapper specifications.**  
 
 ## Overview
 
-- WiFi capabilities to allow online gaming, cartridge update, downloadable content...
+- WiFi capabilities to allow online gaming, cartridge update, downloadable content... (optional)
 - 2 PRG ROM banking modes
 - 4 CHR ROM banking modes
 - Up to 32KB of WRAM, mappable at \$6000-\$7FFF but also within \$8000-\$DFFF

@@ -4,68 +4,67 @@
 >  
 > This document and the project are still WIP and are subject to modifications.  
 > &nbsp;  
-> *last update : 2020/03/25*  
-> &nbsp;  
 
 ## Credits
 
-The Rainbow project is developed by Antoine "glutock" Gohin / Broke Studio.  
+The Rainbow project is developed by Antoine Gohin / Broke Studio.  
 
 Thanks to :
 
-- Paul / InfiniteNesLives for taking time to explain me lots of hardware stuff
+- [Paul](https://twitter.com/InfiniteNesLive) / [InfiniteNesLives](http://www.infiniteneslives.com)  for taking time to explain me lots of hardware stuff
 - Christian Gohin, my father, who helped me designing the board
-- Sylvain Gadrat aka RogerBidon for updating FCEUX to emulate the Rainbow mapper ❤
-- The NES WiFi Club (cheers guys 😊 )
-- NESdev community
+- [Sylvain Gadrat](https://sgadrat.itch.io/super-tilt-bro) aka [RogerBidon](https://twitter.com/RogerBidon) for updating [FCEUX](http://www.fceux.com) to emulate the Rainbow mapper ❤
+- The NES WiFi Club (cheers guys 😊)
+- [NESdev](http://www.nesdev.com) community
 
 ## Table of content
 
-- [Credits](#Credits)
-- [Table of content](#Table-of-content)
-- [What is Rainbow?](#What-is-Rainbow)
-- [Why 'Rainbow'?](#Why-Rainbow)
-- [Mapper registers](#Mapper-registers)
-- [Rainbow registers](#Rainbow-registers)
-  - [UART (\$5000 - R/W)](#UART-5000---RW)
-  - [Status (\$5001 - R/W)](#Status-5001---RW)
-- [Buffers](#Buffers)
-- [Messages format](#Messages-format)
-- [Commands overview](#Commands-overview)
-  - [NES to ESP commands](#NES-to-ESP-commands)
-  - [ESP to NES commands](#ESP-to-NES-commands)
-- [Commands details](#Commands-details)
-  - [GET_ESP_STATUS](#GETESPSTATUS)
-  - [DEBUG_LOG](#DEBUGLOG)
-  - [CLEAR_BUFFERS](#CLEARBUFFERS)
-  - [E2N_BUFFER_DROP](#E2NBUFFERDROP)
-  - [GET_WIFI_STATUS](#GETWIFISTATUS)
-  - [GET_RND_BYTE](#GETRNDBYTE)
-  - [GET_RND_BYTE_RANGE](#GETRNDBYTERANGE)
-  - [GET_RND_WORD](#GETRNDWORD)
-  - [GET_RND_WORD_RANGE](#GETRNDWORDRANGE)
-  - [GET_SERVER_STATUS](#GETSERVERSTATUS)
-  - [GET_SERVER_PING](#GETSERVERPING)
-  - [SET_SERVER_PROTOCOL](#SETSERVERPROTOCOL)
-  - [GET_SERVER_SETTINGS](#GETSERVERSETTINGS)
-  - [SET_SERVER_SETTINGS](#SETSERVERSETTINGS)
-  - [CONNECT_SERVER](#CONNECTSERVER)
-  - [DISCONNECT_SERVER](#DISCONNECTSERVER)
-  - [SEND_MSG_TO_SERVER](#SENDMSGTOSERVER)
-  - [FILE_OPEN](#FILEOPEN)
-  - [FILE_CLOSE](#FILECLOSE)
-  - [FILE_EXISTS](#FILEEXISTS)
-  - [FILE_DELETE](#FILEDELETE)
-  - [FILE_SET_CUR](#FILESETCUR)
-  - [FILE_READ](#FILEREAD)
-  - [FILE_WRITE](#FILEWRITE)
-  - [FILE_APPEND](#FILEAPPEND)
-  - [FILE_COUNT](#FILECOUNT)
-  - [FILE_GET_LIST](#FILEGETLIST)
-  - [FILE_GET_FREE_ID](#FILEGETFREEID)
-  - [FILE_GET_INFO](#FILEGETINFO)
-- [Bootloader](#Bootloader)
-- [TODO](#TODO)
+- [Rainbow documentation](#rainbow-documentation)
+  - [Credits](#credits)
+  - [Table of content](#table-of-content)
+  - [What is Rainbow?](#what-is-rainbow)
+  - [Why 'Rainbow'?](#why-rainbow)
+  - [Mapper registers](#mapper-registers)
+  - [Rainbow registers](#rainbow-registers)
+    - [UART (\$5000 - R/W)](#uart-5000---rw)
+    - [Status (\$5001 - R/W)](#status-5001---rw)
+  - [Buffers](#buffers)
+  - [Messages format](#messages-format)
+  - [Commands overview](#commands-overview)
+    - [NES to ESP commands](#nes-to-esp-commands)
+    - [ESP to NES commands](#esp-to-nes-commands)
+  - [Commands details](#commands-details)
+    - [GET_ESP_STATUS](#getespstatus)
+    - [DEBUG_LOG](#debuglog)
+    - [CLEAR_BUFFERS](#clearbuffers)
+    - [E2N_BUFFER_DROP](#e2nbufferdrop)
+    - [GET_WIFI_STATUS](#getwifistatus)
+    - [GET_RND_BYTE](#getrndbyte)
+    - [GET_RND_BYTE_RANGE](#getrndbyterange)
+    - [GET_RND_WORD](#getrndword)
+    - [GET_RND_WORD_RANGE](#getrndwordrange)
+    - [GET_SERVER_STATUS](#getserverstatus)
+    - [GET_SERVER_PING](#getserverping)
+    - [SET_SERVER_PROTOCOL](#setserverprotocol)
+    - [GET_SERVER_SETTINGS](#getserversettings)
+    - [SET_SERVER_SETTINGS](#setserversettings)
+    - [CONNECT_SERVER](#connectserver)
+    - [DISCONNECT_SERVER](#disconnectserver)
+    - [SEND_MSG_TO_SERVER](#sendmsgtoserver)
+    - [FILE_OPEN](#fileopen)
+    - [FILE_CLOSE](#fileclose)
+    - [FILE_EXISTS](#fileexists)
+    - [FILE_DELETE](#filedelete)
+    - [FILE_SET_CUR](#filesetcur)
+    - [FILE_READ](#fileread)
+    - [FILE_WRITE](#filewrite)
+    - [FILE_APPEND](#fileappend)
+    - [FILE_COUNT](#filecount)
+    - [FILE_GET_LIST](#filegetlist)
+    - [FILE_GET_FREE_ID](#filegetfreeid)
+    - [FILE_GET_INFO](#filegetinfo)
+  - [Bootloader](#bootloader)
+  - [TODO](#todo)
 
 ---
 
@@ -84,8 +83,8 @@ Second reason is because Kevin Hanley from KHAN games is working on a game calle
 
 ## Mapper registers
 
-For now, the Rainbow mapper is based on UNROM-512 mapper to make the development easier.  
-However, a brand new mapper will be used in the end, but I need my new prototype to be there to do it.
+First Rainbow prototypes were based on UNROM-512 mapper to make the development easier.  
+Now the board uses its own mapper. Detailed documentation of the mapper can be found here: [rainbow-mapper.md](rainbow-mapper.md).  
 
 ## Rainbow registers
 
@@ -967,3 +966,7 @@ Those are basic ideas, but more are to come ...
 ---
 
 ## TODO
+
+- [ ] Add math functions/commands (multiplication, division, cos, sin, ...)
+- [ ] Add bootloader source code to github and link it in the Bootloader section
+  
