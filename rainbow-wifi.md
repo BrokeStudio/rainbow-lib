@@ -1,4 +1,4 @@
-# Rainbow documentation
+# Rainbow WiFi documentation
 
 > **Disclaimer**  
 >  
@@ -19,7 +19,7 @@ Thanks to :
 
 ## Table of content
 
-- [Rainbow documentation](#rainbow-documentation)
+- [Rainbow WiFi documentation](#rainbow-wifi-documentation)
   - [Credits](#credits)
   - [Table of content](#table-of-content)
   - [What is Rainbow?](#what-is-rainbow)
