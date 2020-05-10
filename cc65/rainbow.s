@@ -198,8 +198,7 @@
     sta $5000
 
     ; wait for answer
-  :  
-    ;lda $5001
+  :
     bit $5001
     bpl :-
 
@@ -223,8 +222,7 @@
     sta $5000
 
     ; wait for answer
-  :  
-    ;lda $5001
+  :
     bit $5001
     bpl :-
 
