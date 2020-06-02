@@ -342,9 +342,32 @@ di.. ...e
             if both 'd' and 'i' flags are set, then NES IRQ will be triggered
 ```
 
+### Mapper version (\$5C03)
+
+Read this register to get mapper version.  
+
+```
+7  bit  0
+---- ----
+PPPv vvvv
+|||| ||||
+|||+-++++-  version
++++-------  platform
+```
+
+| Platform (PPP) | Description  |
+| -------------- | ------------ |
+| 0              | PCB          |
+| 1              | Emulator     |
+| 2              | Web emulator |
+
+| Version (vvvvv) | PCB (0)                   | EMU (1) | WEB (2) |
+| --------------- | ------------------------- | ------- | ------- |
+| 0               | v1.0 (first proto board)  | v1.0    | v1.0    |
+| 1               | v1.1 (second proto board) | n/a     | n/a     |
+
 ## Unused registers
 
 \$5007  
 \$5806  
 \$5807  
-\$5C03  
