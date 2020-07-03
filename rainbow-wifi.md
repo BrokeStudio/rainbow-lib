@@ -34,35 +34,37 @@ Thanks to :
     - [NES to ESP commands](#nes-to-esp-commands)
     - [ESP to NES commands](#esp-to-nes-commands)
   - [Commands details](#commands-details)
-    - [GET_ESP_STATUS](#getespstatus)
-    - [DEBUG_LOG](#debuglog)
-    - [CLEAR_BUFFERS](#clearbuffers)
-    - [E2N_BUFFER_DROP](#e2nbufferdrop)
-    - [GET_WIFI_STATUS](#getwifistatus)
-    - [GET_RND_BYTE](#getrndbyte)
-    - [GET_RND_BYTE_RANGE](#getrndbyterange)
-    - [GET_RND_WORD](#getrndword)
-    - [GET_RND_WORD_RANGE](#getrndwordrange)
-    - [GET_SERVER_STATUS](#getserverstatus)
-    - [GET_SERVER_PING](#getserverping)
-    - [SET_SERVER_PROTOCOL](#setserverprotocol)
-    - [GET_SERVER_SETTINGS](#getserversettings)
-    - [SET_SERVER_SETTINGS](#setserversettings)
-    - [CONNECT_SERVER](#connectserver)
-    - [DISCONNECT_SERVER](#disconnectserver)
-    - [SEND_MSG_TO_SERVER](#sendmsgtoserver)
-    - [FILE_OPEN](#fileopen)
-    - [FILE_CLOSE](#fileclose)
-    - [FILE_EXISTS](#fileexists)
-    - [FILE_DELETE](#filedelete)
-    - [FILE_SET_CUR](#filesetcur)
-    - [FILE_READ](#fileread)
-    - [FILE_WRITE](#filewrite)
-    - [FILE_APPEND](#fileappend)
-    - [FILE_COUNT](#filecount)
-    - [FILE_GET_LIST](#filegetlist)
-    - [FILE_GET_FREE_ID](#filegetfreeid)
-    - [FILE_GET_INFO](#filegetinfo)
+    - [GET_ESP_STATUS](#get_esp_status)
+    - [DEBUG_GET_CONFIG](#debug_get_config)
+    - [DEBUG_SET_CONFIG](#debug_set_config)
+    - [DEBUG_LOG](#debug_log)
+    - [CLEAR_BUFFERS](#clear_buffers)
+    - [E2N_BUFFER_DROP](#e2n_buffer_drop)
+    - [GET_WIFI_STATUS](#get_wifi_status)
+    - [GET_RND_BYTE](#get_rnd_byte)
+    - [GET_RND_BYTE_RANGE](#get_rnd_byte_range)
+    - [GET_RND_WORD](#get_rnd_word)
+    - [GET_RND_WORD_RANGE](#get_rnd_word_range)
+    - [GET_SERVER_STATUS](#get_server_status)
+    - [GET_SERVER_PING](#get_server_ping)
+    - [SET_SERVER_PROTOCOL](#set_server_protocol)
+    - [GET_SERVER_SETTINGS](#get_server_settings)
+    - [SET_SERVER_SETTINGS](#set_server_settings)
+    - [CONNECT_SERVER](#connect_server)
+    - [DISCONNECT_SERVER](#disconnect_server)
+    - [SEND_MSG_TO_SERVER](#send_msg_to_server)
+    - [FILE_OPEN](#file_open)
+    - [FILE_CLOSE](#file_close)
+    - [FILE_EXISTS](#file_exists)
+    - [FILE_DELETE](#file_delete)
+    - [FILE_SET_CUR](#file_set_cur)
+    - [FILE_READ](#file_read)
+    - [FILE_WRITE](#file_write)
+    - [FILE_APPEND](#file_append)
+    - [FILE_COUNT](#file_count)
+    - [FILE_GET_LIST](#file_get_list)
+    - [FILE_GET_FREE_ID](#file_get_free_id)
+    - [FILE_GET_INFO](#file_get_info)
   - [Bootloader](#bootloader)
   - [TODO](#todo)
 
@@ -157,13 +159,15 @@ Write to register $5000 to send byte to the ESP.
 ### Status (\$5001 - R/W)
 
 ```
-DI.....E
-||.....|
-||.....+ ESP enable ( 0 : disable | 1 : enable ) R/W
-|+------ IRQ enable ( 0 : disable | 1 : enable ) R/W
-+------- Data ready ( 0 : disable | 1 : enable ) R
-         this flag is set to 1 when the ESP has data to transmit to the NES
-         if the I flag is set, NES IRQ will be triggered
+7  bit  0
+---- ----
+DI.. ...E
+||      |
+||      + ESP enable ( 0 : disable | 1 : enable ) R/W
+|+------- IRQ enable ( 0 : disable | 1 : enable ) R/W
++-------- Data ready ( 0 : disable | 1 : enable ) R
+          this flag is set to 1 when the ESP has data to transmit to the NES
+          if the I flag is set, NES IRQ will be triggered
 ```
 
 Note : the D flag won't be set to 0 immediately once the NES read the last byte from the ESP.
@@ -193,54 +197,57 @@ A message always have the same format and follows these rules:
 | Value | N2E commands                                | Description                                      |
 | ----- | ------------------------------------------- | ------------------------------------------------ |
 | 0     | [GET_ESP_STATUS](#GET_ESP_STATUS)           | Get ESP status                                   |
-| 1     | [DEBUG_LOG](#DEBUG_LOG)                     | Debug / Log data                                 |
-| 2     | [CLEAR_BUFFERS](#CLEAR_BUFFERS)             | Clear RX/TX buffers                              |
-| 3     | [E2N_BUFFER_DROP](#E2N_BUFFER_DROP)         | Drop messages from TX (ESP->NES) buffer          |
-| 3     | [GET_WIFI_STATUS](#GET_WIFI_STATUS)         | Get WiFi connection status                       |
-| 5     | [GET_RND_BYTE](#GET_RND_BYTE)               | Get random byte                                  |
-| 6     | [GET_RND_BYTE_RANGE](#GET_RND_BYTE_RANGE)   | Get random byte between custom min/max           |
-| 7     | [GET_RND_WORD](#GET_RND_WORD)               | Get random word                                  |
-| 8     | [GET_RND_WORD_RANGE](#GET_RND_WORD_RANGE)   | Get random word between custom min/max           |
-| 9     | [GET_SERVER_STATUS](#GET_SERVER_STATUS)     | Get server connection status                     |
-| 10    | [GET_SERVER_PING](#GET_SERVER_PING)         | Get ping between ESP and server                  |
-| 11    | [SET_SERVER_PROTOCOL](#SET_SERVER_PROTOCOL) | Set protocol to be used to communicate (WS/UDP)  |
-| 12    | [GET_SERVER_SETTINGS](#GET_SERVER_SETTINGS) | Get host name and port defined in the ESP config |
-| 13    | [SET_SERVER_SETTINGS](#SET_SERVER_SETTINGS) | Set host name and port                           |
-| 14    | [CONNECT_SERVER](#CONNECT_SERVER)           | Connect to server                                |
-| 15    | [DISCONNECT_SERVER](#DISCONNECT_SERVER)     | Disconnect from server                           |
-| 16    | [SEND_MSG_TO_SERVER](#SEND_MSG_TO_SERVER)   | Send message to rainbow server                   |
-| 17    | [FILE_OPEN](#FILE_OPEN)                     | Open working file                                |
-| 18    | [FILE_CLOSE](#FILE_CLOSE)                   | Close working file                               |
-| 19    | [FILE_EXISTS](#FILE_EXISTS)                 | Check if file exists                             |
-| 20    | [FILE_DELETE](#FILE_DELETE)                 | Delete a file                                    |
-| 21    | [FILE_SET_CUR](#FILE_SET_CUR)               | Set working file cursor position a file          |
-| 22    | [FILE_READ](#FILE_READ)                     | Read working file (at specific position)         |
-| 23    | [FILE_WRITE](#FILE_WRITE)                   | Write working file (at specific position)        |
-| 24    | [FILE_APPEND](#FILE_APPEND)                 | Append data to working file                      |
-| 25    | [FILE_COUNT](#FILE_COUNT)                   | Get number of tiles in a specific path           |
-| 26    | [FILE_GET_LIST](#FILE_GET_LIST)             | Get list of existing files in a specific path    |
-| 27    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)       | Get an unexisting file ID in a specific path.    |
-| 28    | [FILE_GET_INFO](#FILE_GET_INFO)             | Get file info (size + crc32)                     |
+| 1     | [DEBUG_GET_CONFIG](#DEBUG_GET_CONFIG)       | Get debug configuration                          |
+| 2     | [DEBUG_SET_CONFIG](#DEBUG_SET_CONFIG)       | Set debug configuration                          |
+| 3     | [DEBUG_LOG](#DEBUG_LOG)                     | Debug / Log data                                 |
+| 4     | [CLEAR_BUFFERS](#CLEAR_BUFFERS)             | Clear RX/TX buffers                              |
+| 5     | [E2N_BUFFER_DROP](#E2N_BUFFER_DROP)         | Drop messages from TX (ESP->NES) buffer          |
+| 6     | [GET_WIFI_STATUS](#GET_WIFI_STATUS)         | Get WiFi connection status                       |
+| 7     | [GET_RND_BYTE](#GET_RND_BYTE)               | Get random byte                                  |
+| 8     | [GET_RND_BYTE_RANGE](#GET_RND_BYTE_RANGE)   | Get random byte between custom min/max           |
+| 9     | [GET_RND_WORD](#GET_RND_WORD)               | Get random word                                  |
+| 10    | [GET_RND_WORD_RANGE](#GET_RND_WORD_RANGE)   | Get random word between custom min/max           |
+| 11    | [GET_SERVER_STATUS](#GET_SERVER_STATUS)     | Get server connection status                     |
+| 12    | [GET_SERVER_PING](#GET_SERVER_PING)         | Get ping between ESP and server                  |
+| 13    | [SET_SERVER_PROTOCOL](#SET_SERVER_PROTOCOL) | Set protocol to be used to communicate (WS/UDP)  |
+| 14    | [GET_SERVER_SETTINGS](#GET_SERVER_SETTINGS) | Get host name and port defined in the ESP config |
+| 15    | [SET_SERVER_SETTINGS](#SET_SERVER_SETTINGS) | Set host name and port                           |
+| 16    | [CONNECT_SERVER](#CONNECT_SERVER)           | Connect to server                                |
+| 17    | [DISCONNECT_SERVER](#DISCONNECT_SERVER)     | Disconnect from server                           |
+| 18    | [SEND_MSG_TO_SERVER](#SEND_MSG_TO_SERVER)   | Send message to rainbow server                   |
+| 19    | [FILE_OPEN](#FILE_OPEN)                     | Open working file                                |
+| 20    | [FILE_CLOSE](#FILE_CLOSE)                   | Close working file                               |
+| 21    | [FILE_EXISTS](#FILE_EXISTS)                 | Check if file exists                             |
+| 22    | [FILE_DELETE](#FILE_DELETE)                 | Delete a file                                    |
+| 23    | [FILE_SET_CUR](#FILE_SET_CUR)               | Set working file cursor position a file          |
+| 24    | [FILE_READ](#FILE_READ)                     | Read working file (at specific position)         |
+| 25    | [FILE_WRITE](#FILE_WRITE)                   | Write working file (at specific position)        |
+| 26    | [FILE_APPEND](#FILE_APPEND)                 | Append data to working file                      |
+| 27    | [FILE_COUNT](#FILE_COUNT)                   | Get number of tiles in a specific path           |
+| 28    | [FILE_GET_LIST](#FILE_GET_LIST)             | Get list of existing files in a specific path    |
+| 29    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)       | Get an unexisting file ID in a specific path.    |
+| 30    | [FILE_GET_INFO](#FILE_GET_INFO)             | Get file info (size + crc32)                     |
 
 ### ESP to NES commands
 
 | Value | E2N commands                               | Description |
 | ----- | ------------------------------------------ | ----------- |
 | 0     | [READY](#GET_ESP_STATUS)                   |             |
-| 1     | [FILE_EXISTS](#FILE_EXISTS)                |             |
-| 2     | [FILE_DELETE](#FILE_DELETE)                |             |
-| 3     | [FILE_LIST](#FILE_GET_LIST)                |             |
+| 1     | [DEBUG_CONFIG](#DEBUG_GET_CONFIG)          |             |
+| 2     | [FILE_EXISTS](#FILE_EXISTS)                |             |
+| 3     | [FILE_DELETE](#FILE_DELETE)                |             |
+| 4     | [FILE_LIST](#FILE_GET_LIST)                |             |
 | 4     | [FILE_DATA](#FILE_READ)                    |             |
-| 5     | [FILE_COUNT](#FILE_COUNT)                  |             |
-| 6     | [FILE_ID](#FILE_GET_FREE_ID)               |             |
-| 7     | [FILE_INFO](#FILE_GET_INFO)                |             |
-| 8     | [WIFI_STATUS](#GET_WIFI_STATUS)            |             |
-| 9     | [SERVER_STATUS](#GET_SERVER_STATUS)        |             |
-| 10    | [SERVER_PING](#GET_SERVER_PING)            |             |
-| 11    | [HOST_SETTINGS](#GET_SERVER_SETTINGS)      |             |
+| 6     | [FILE_COUNT](#FILE_COUNT)                  |             |
+| 7     | [FILE_ID](#FILE_GET_FREE_ID)               |             |
+| 8     | [FILE_INFO](#FILE_GET_INFO)                |             |
+| 9     | [WIFI_STATUS](#GET_WIFI_STATUS)            |             |
+| 10    | [SERVER_STATUS](#GET_SERVER_STATUS)        |             |
+| 11    | [SERVER_PING](#GET_SERVER_PING)            |             |
+| 12    | [HOST_SETTINGS](#GET_SERVER_SETTINGS)      |             |
 | 12    | [RND_BYTE](#GET_RND_BYTE)                  |             |
-| 13    | [RND_WORD](#GET_RND_WORD)                  |             |
-| 14    | [MESSAGE_FROM_SERVER](#SEND_MSG_TO_SERVER) |             |
+| 14    | [RND_WORD](#GET_RND_WORD)                  |             |
+| 15    | [MESSAGE_FROM_SERVER](#SEND_MSG_TO_SERVER) |             |
 
 ## Commands details
 
@@ -260,6 +267,58 @@ The ESP will only answer when ready, so once you sent the message, just wait for
 | ---- | ------------------------------------------- | ------------ |
 | 0    | Length of the message (excluding this byte) | `1`          |
 | 1    | Command ID (see ESP to NES commands list)   | `E2N::READY` |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### DEBUG_GET_CONFIG
+
+This command returns the debug configuration. 
+
+| Byte | Description                                 | Example                 |
+| ---- | ------------------------------------------- | ----------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                     |
+| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_GET_CONFIG` |
+
+**Returns:**
+
+| Byte | Description                                 | Example             |
+| ---- | ------------------------------------------- | ------------------- |
+| 0    | Length of the message (excluding this byte) | `2`                 |
+| 1    | Command ID (see ESP to NES commands list)   | `E2N::DEBUG_CONFIG` |
+| 2    | Debug configuration value                   | `0`                 |
+
+See [DEBUG_SET_CONFIG](#DEBUG_SET_CONFIG) command for debug configuration value details
+
+[Back to command list](#Commands-overview)
+
+---
+
+### DEBUG_SET_CONFIG
+
+This command sets the debug configuration. 
+
+| Byte | Description                                 | Example                 |
+| ---- | ------------------------------------------- | ----------------------- |
+| 0    | Length of the message (excluding this byte) | `2`                     |
+| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_SET_CONFIG` |
+| 2    | Debug configuration value                   | `1`                     |
+
+**The configuration value uses bits like this:**
+
+```
+7  bit  0
+---- ----
+.... ..sl
+       ||
+       |+-  enable/disable log output 
+       +--  enable/disable serial output log
+            outputs what was sent to the NES
+            NOTE: this is not recommended when lots of messages
+                  are exchanged (ex: during real-time game),
+                  the ESP can't keep up
+```
 
 [Back to command list](#Commands-overview)
 
