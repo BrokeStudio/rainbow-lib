@@ -120,7 +120,7 @@ Note: when using 1K chr banking mode with 512K CHR-ROM,
 
 ```
 7  bit  0
----------
+---- ----
 c.BB BBbb
 | || ||||
 | ++-++++-  bank index
@@ -168,7 +168,7 @@ Register \$5004:
 
 ```
 7  bit  0
----------
+---- ----
 c.BB BBbb
 | || ||||
 | ++-++++-  bank index

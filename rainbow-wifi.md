@@ -13,7 +13,7 @@ Thanks to :
 
 - [Paul](https://twitter.com/InfiniteNesLive) / [InfiniteNesLives](http://www.infiniteneslives.com)  for taking time to explain me lots of hardware stuff
 - Christian Gohin, my father, who helped me designing the board
-- [Sylvain Gadrat](https://sgadrat.itch.io/super-tilt-bro) aka [RogerBidon](https://twitter.com/RogerBidon) for updating [FCEUX](http://www.fceux.com) to emulate the Rainbow mapper ❤
+- [Sylvain Gadrat](https://sgadrat.itch.io/super-tilt-bro) aka [RogerBidon](https://twitter.com/RogerBidon) for helping me update [FCEUX](http://www.fceux.com) to emulate the Rainbow mapper ❤
 - The NES WiFi Club (cheers guys 😊)
 - [NESdev](http://www.nesdev.com) community
 
@@ -326,7 +326,8 @@ This command sets the debug configuration.
 
 ### DEBUG_LOG
 
-This command logs data on the serial port of the ESP. (pin 5 of the ESP board edge connector)
+This command logs data on the serial port of the ESP.  
+Can be read using a UART/USB adapter, RX to pin 5 of the ESP board edge connector, GND to pin 6.  
 
 | Byte | Description                                 | Example          |
 | ---- | ------------------------------------------- | ---------------- |
