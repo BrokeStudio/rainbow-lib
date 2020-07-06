@@ -35,8 +35,8 @@ Thanks to :
     - [ESP to NES commands](#esp-to-nes-commands)
   - [Commands details](#commands-details)
     - [GET_ESP_STATUS](#get_esp_status)
-    - [DEBUG_GET_CONFIG](#debug_get_config)
-    - [DEBUG_SET_CONFIG](#debug_set_config)
+    - [DEBUG_GET_LEVEL](#debug_get_level)
+    - [DEBUG_SET_LEVEL](#debug_set_level)
     - [DEBUG_LOG](#debug_log)
     - [CLEAR_BUFFERS](#clear_buffers)
     - [E2N_BUFFER_DROP](#e2n_buffer_drop)
@@ -49,7 +49,9 @@ Thanks to :
     - [GET_SERVER_PING](#get_server_ping)
     - [SET_SERVER_PROTOCOL](#set_server_protocol)
     - [GET_SERVER_SETTINGS](#get_server_settings)
+    - [GET_SERVER_CONFIG_SETTINGS](#get_server_config_settings)
     - [SET_SERVER_SETTINGS](#set_server_settings)
+    - [RESTORE_SERVER_SETTINGS](#restore_server_settings)
     - [CONNECT_SERVER](#connect_server)
     - [DISCONNECT_SERVER](#disconnect_server)
     - [SEND_MSG_TO_SERVER](#send_msg_to_server)
@@ -194,50 +196,52 @@ A message always have the same format and follows these rules:
 
 ### NES to ESP commands
 
-| Value | N2E commands                                | Description                                      |
-| ----- | ------------------------------------------- | ------------------------------------------------ |
-| 0     | [GET_ESP_STATUS](#GET_ESP_STATUS)           | Get ESP status                                   |
-| 1     | [DEBUG_GET_CONFIG](#DEBUG_GET_CONFIG)       | Get debug configuration                          |
-| 2     | [DEBUG_SET_CONFIG](#DEBUG_SET_CONFIG)       | Set debug configuration                          |
-| 3     | [DEBUG_LOG](#DEBUG_LOG)                     | Debug / Log data                                 |
-| 4     | [CLEAR_BUFFERS](#CLEAR_BUFFERS)             | Clear RX/TX buffers                              |
-| 5     | [E2N_BUFFER_DROP](#E2N_BUFFER_DROP)         | Drop messages from TX (ESP->NES) buffer          |
-| 6     | [GET_WIFI_STATUS](#GET_WIFI_STATUS)         | Get WiFi connection status                       |
-| 7     | [GET_RND_BYTE](#GET_RND_BYTE)               | Get random byte                                  |
-| 8     | [GET_RND_BYTE_RANGE](#GET_RND_BYTE_RANGE)   | Get random byte between custom min/max           |
-| 9     | [GET_RND_WORD](#GET_RND_WORD)               | Get random word                                  |
-| 10    | [GET_RND_WORD_RANGE](#GET_RND_WORD_RANGE)   | Get random word between custom min/max           |
-| 11    | [GET_SERVER_STATUS](#GET_SERVER_STATUS)     | Get server connection status                     |
-| 12    | [GET_SERVER_PING](#GET_SERVER_PING)         | Get ping between ESP and server                  |
-| 13    | [SET_SERVER_PROTOCOL](#SET_SERVER_PROTOCOL) | Set protocol to be used to communicate (WS/UDP)  |
-| 14    | [GET_SERVER_SETTINGS](#GET_SERVER_SETTINGS) | Get host name and port defined in the ESP config |
-| 15    | [SET_SERVER_SETTINGS](#SET_SERVER_SETTINGS) | Set host name and port                           |
-| 16    | [CONNECT_SERVER](#CONNECT_SERVER)           | Connect to server                                |
-| 17    | [DISCONNECT_SERVER](#DISCONNECT_SERVER)     | Disconnect from server                           |
-| 18    | [SEND_MSG_TO_SERVER](#SEND_MSG_TO_SERVER)   | Send message to rainbow server                   |
-| 19    | [FILE_OPEN](#FILE_OPEN)                     | Open working file                                |
-| 20    | [FILE_CLOSE](#FILE_CLOSE)                   | Close working file                               |
-| 21    | [FILE_EXISTS](#FILE_EXISTS)                 | Check if file exists                             |
-| 22    | [FILE_DELETE](#FILE_DELETE)                 | Delete a file                                    |
-| 23    | [FILE_SET_CUR](#FILE_SET_CUR)               | Set working file cursor position a file          |
-| 24    | [FILE_READ](#FILE_READ)                     | Read working file (at specific position)         |
-| 25    | [FILE_WRITE](#FILE_WRITE)                   | Write working file (at specific position)        |
-| 26    | [FILE_APPEND](#FILE_APPEND)                 | Append data to working file                      |
-| 27    | [FILE_COUNT](#FILE_COUNT)                   | Get number of tiles in a specific path           |
-| 28    | [FILE_GET_LIST](#FILE_GET_LIST)             | Get list of existing files in a specific path    |
-| 29    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)       | Get an unexisting file ID in a specific path.    |
-| 30    | [FILE_GET_INFO](#FILE_GET_INFO)             | Get file info (size + crc32)                     |
+| Value | N2E commands                                              | Description                                                               |
+| ----- | --------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 0     | [GET_ESP_STATUS](#GET_ESP_STATUS)                         | Get ESP status                                                            |
+| 1     | [DEBUG_GET_LEVEL](#DEBUG_GET_LEVEL)                       | Get debug level                                                           |
+| 2     | [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL)                       | Set debug level                                                           |
+| 3     | [DEBUG_LOG](#DEBUG_LOG)                                   | Debug / Log data                                                          |
+| 4     | [CLEAR_BUFFERS](#CLEAR_BUFFERS)                           | Clear RX/TX buffers                                                       |
+| 5     | [E2N_BUFFER_DROP](#E2N_BUFFER_DROP)                       | Drop messages from TX (ESP->NES) buffer                                   |
+| 6     | [GET_WIFI_STATUS](#GET_WIFI_STATUS)                       | Get WiFi connection status                                                |
+| 7     | [GET_RND_BYTE](#GET_RND_BYTE)                             | Get random byte                                                           |
+| 8     | [GET_RND_BYTE_RANGE](#GET_RND_BYTE_RANGE)                 | Get random byte between custom min/max                                    |
+| 9     | [GET_RND_WORD](#GET_RND_WORD)                             | Get random word                                                           |
+| 10    | [GET_RND_WORD_RANGE](#GET_RND_WORD_RANGE)                 | Get random word between custom min/max                                    |
+| 11    | [GET_SERVER_STATUS](#GET_SERVER_STATUS)                   | Get server connection status                                              |
+| 12    | [GET_SERVER_PING](#GET_SERVER_PING)                       | Get ping between ESP and server                                           |
+| 13    | [SET_SERVER_PROTOCOL](#SET_SERVER_PROTOCOL)               | Set protocol to be used to communicate (WS/UDP)                           |
+| 14    | [GET_SERVER_SETTINGS](#GET_SERVER_SETTINGS)               | Get current server host name and port                                     |
+| 15    | [GET_SERVER_CONFIG_SETTINGS](#GET_SERVER_CONFIG_SETTINGS) | Get server host name and port defined in the Rainbow config file          |
+| 16    | [SET_SERVER_SETTINGS](#SET_SERVER_SETTINGS)               | Set current server host name and port                                     |
+| 17    | [RESTORE_SERVER_SETTINGS](#RESTORE_SERVER_SETTINGS)       | Restore server host name and port to values defined in the Rainbow config |
+| 18    | [CONNECT_SERVER](#CONNECT_SERVER)                         | Connect to server                                                         |
+| 19    | [DISCONNECT_SERVER](#DISCONNECT_SERVER)                   | Disconnect from server                                                    |
+| 20    | [SEND_MSG_TO_SERVER](#SEND_MSG_TO_SERVER)                 | Send message to rainbow server                                            |
+| 21    | [FILE_OPEN](#FILE_OPEN)                                   | Open working file                                                         |
+| 22    | [FILE_CLOSE](#FILE_CLOSE)                                 | Close working file                                                        |
+| 23    | [FILE_EXISTS](#FILE_EXISTS)                               | Check if file exists                                                      |
+| 24    | [FILE_DELETE](#FILE_DELETE)                               | Delete a file                                                             |
+| 25    | [FILE_SET_CUR](#FILE_SET_CUR)                             | Set working file cursor position a file                                   |
+| 26    | [FILE_READ](#FILE_READ)                                   | Read working file (at specific position)                                  |
+| 27    | [FILE_WRITE](#FILE_WRITE)                                 | Write working file (at specific position)                                 |
+| 28    | [FILE_APPEND](#FILE_APPEND)                               | Append data to working file                                               |
+| 29    | [FILE_COUNT](#FILE_COUNT)                                 | Get number of tiles in a specific path                                    |
+| 30    | [FILE_GET_LIST](#FILE_GET_LIST)                           | Get list of existing files in a specific path                             |
+| 31    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)                     | Get an unexisting file ID in a specific path.                             |
+| 32    | [FILE_GET_INFO](#FILE_GET_INFO)                           | Get file info (size + crc32)                                              |
 
 ### ESP to NES commands
 
 | Value | E2N commands                               | Description |
 | ----- | ------------------------------------------ | ----------- |
 | 0     | [READY](#GET_ESP_STATUS)                   |             |
-| 1     | [DEBUG_CONFIG](#DEBUG_GET_CONFIG)          |             |
+| 1     | [DEBUG_LEVEL](#DEBUG_GET_LEVEL)            |             |
 | 2     | [FILE_EXISTS](#FILE_EXISTS)                |             |
 | 3     | [FILE_DELETE](#FILE_DELETE)                |             |
 | 4     | [FILE_LIST](#FILE_GET_LIST)                |             |
-| 4     | [FILE_DATA](#FILE_READ)                    |             |
+| 5     | [FILE_DATA](#FILE_READ)                    |             |
 | 6     | [FILE_COUNT](#FILE_COUNT)                  |             |
 | 7     | [FILE_ID](#FILE_GET_FREE_ID)               |             |
 | 8     | [FILE_INFO](#FILE_GET_INFO)                |             |
@@ -245,7 +249,7 @@ A message always have the same format and follows these rules:
 | 10    | [SERVER_STATUS](#GET_SERVER_STATUS)        |             |
 | 11    | [SERVER_PING](#GET_SERVER_PING)            |             |
 | 12    | [HOST_SETTINGS](#GET_SERVER_SETTINGS)      |             |
-| 12    | [RND_BYTE](#GET_RND_BYTE)                  |             |
+| 13    | [RND_BYTE](#GET_RND_BYTE)                  |             |
 | 14    | [RND_WORD](#GET_RND_WORD)                  |             |
 | 15    | [MESSAGE_FROM_SERVER](#SEND_MSG_TO_SERVER) |             |
 
@@ -272,40 +276,40 @@ The ESP will only answer when ready, so once you sent the message, just wait for
 
 ---
 
-### DEBUG_GET_CONFIG
+### DEBUG_GET_LEVEL
 
-This command returns the debug configuration. 
+This command returns the debug level. 
 
-| Byte | Description                                 | Example                 |
-| ---- | ------------------------------------------- | ----------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                     |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_GET_CONFIG` |
+| Byte | Description                                 | Example                |
+| ---- | ------------------------------------------- | ---------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                    |
+| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_GET_LEVEL` |
 
 **Returns:**
 
-| Byte | Description                                 | Example             |
-| ---- | ------------------------------------------- | ------------------- |
-| 0    | Length of the message (excluding this byte) | `2`                 |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::DEBUG_CONFIG` |
-| 2    | Debug configuration value                   | `0`                 |
+| Byte | Description                                 | Example            |
+| ---- | ------------------------------------------- | ------------------ |
+| 0    | Length of the message (excluding this byte) | `2`                |
+| 1    | Command ID (see ESP to NES commands list)   | `E2N::DEBUG_LEVEL` |
+| 2    | Debug configuration value                   | `0`                |
 
-See [DEBUG_SET_CONFIG](#DEBUG_SET_CONFIG) command for debug configuration value details
+See [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL) command for debug level value details
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### DEBUG_SET_CONFIG
+### DEBUG_SET_LEVEL
 
-This command sets the debug configuration. 
+This command sets the debug level. 
 
-| Byte | Description                                 | Example                 |
-| ---- | ------------------------------------------- | ----------------------- |
-| 0    | Length of the message (excluding this byte) | `2`                     |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_SET_CONFIG` |
-| 2    | Debug configuration value                   | `1`                     |
+| Byte | Description                                 | Example                |
+| ---- | ------------------------------------------- | ---------------------- |
+| 0    | Length of the message (excluding this byte) | `2`                    |
+| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_SET_LEVEL` |
+| 2    | Debug level value                           | `1`                    |
 
-**The configuration value uses bits like this:**
+**The debug level value uses bits like this:**
 
 ```
 7  bit  0
@@ -328,6 +332,7 @@ This command sets the debug configuration.
 
 This command logs data on the serial port of the ESP.  
 Can be read using a UART/USB adapter, RX to pin 5 of the ESP board edge connector, GND to pin 6.  
+Bit 1 of the debug level needs to be set (see [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL)).  
 
 | Byte | Description                                 | Example          |
 | ---- | ------------------------------------------- | ---------------- |
@@ -587,7 +592,7 @@ This command sets the protocol to be use when talking to game server.
 
 ### GET_SERVER_SETTINGS
 
-This command gets the server settings (IP address and port).
+This command returns the current server settings (hostname and port).  
 
 | Byte | Description                                 | Example                    |
 | ---- | ------------------------------------------- | -------------------------- |
@@ -596,28 +601,66 @@ This command gets the server settings (IP address and port).
 
 **Returns:**
 
-| Byte | Description                                                                   | Example              |
-| ---- | ----------------------------------------------------------------------------- | -------------------- |
-| 0    | Length of the message (excluding this byte)                                   | `1` or more          |
-| 1    | Command ID (see ESP to NES commands list)                                     | `E2N::HOST_SETTINGS` |
-|      | *next bytes are returned if a server host AND port are set in the ESP config* |                      |
-| 2    | Port MSB                                                                      | `0x0B`               |
-| 3    | Port LSB                                                                      | `0xB8`               |
-| 4    | Hostname string                                                               | `G`                  |
-| 5    | ...                                                                           | `A`                  |
-| 6    | ...                                                                           | `M`                  |
-| 7    | ...                                                                           | `E`                  |
-| 8    | ...                                                                           | `.`                  |
-| 9    | ...                                                                           | `S`                  |
-| 10   | ...                                                                           | `E`                  |
-| 11   | ...                                                                           | `R`                  |
-| 12   | ...                                                                           | `V`                  |
-| 13   | ...                                                                           | `E`                  |
-| 14   | ...                                                                           | `R`                  |
-| 15   | ...                                                                           | `.`                  |
-| 16   | ...                                                                           | `N`                  |
-| 17   | ...                                                                           | `E`                  |
-| 18   | ...                                                                           | `T`                  |
+| Byte | Description                                                                                | Example              |
+| ---- | ------------------------------------------------------------------------------------------ | -------------------- |
+| 0    | Length of the message (excluding this byte)                                                | `1` or more          |
+| 1    | Command ID (see ESP to NES commands list)                                                  | `E2N::HOST_SETTINGS` |
+|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                      |
+| 2    | Port MSB                                                                                   | `0x0B`               |
+| 3    | Port LSB                                                                                   | `0xB8`               |
+| 4    | Hostname string                                                                            | `G`                  |
+| 5    | ...                                                                                        | `A`                  |
+| 6    | ...                                                                                        | `M`                  |
+| 7    | ...                                                                                        | `E`                  |
+| 8    | ...                                                                                        | `.`                  |
+| 9    | ...                                                                                        | `S`                  |
+| 10   | ...                                                                                        | `E`                  |
+| 11   | ...                                                                                        | `R`                  |
+| 12   | ...                                                                                        | `V`                  |
+| 13   | ...                                                                                        | `E`                  |
+| 14   | ...                                                                                        | `R`                  |
+| 15   | ...                                                                                        | `.`                  |
+| 16   | ...                                                                                        | `N`                  |
+| 17   | ...                                                                                        | `E`                  |
+| 18   | ...                                                                                        | `T`                  |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### GET_SERVER_CONFIG_SETTINGS
+
+This command returns the server settings (hostname and port) from the Rainbow config file.  
+
+| Byte | Description                                 | Example                           |
+| ---- | ------------------------------------------- | --------------------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                               |
+| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_SERVER_CONFIG_SETTINGS` |
+
+**Returns:**
+
+| Byte | Description                                                                                | Example              |
+| ---- | ------------------------------------------------------------------------------------------ | -------------------- |
+| 0    | Length of the message (excluding this byte)                                                | `1` or more          |
+| 1    | Command ID (see ESP to NES commands list)                                                  | `E2N::HOST_SETTINGS` |
+|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                      |
+| 2    | Port MSB                                                                                   | `0x0B`               |
+| 3    | Port LSB                                                                                   | `0xB8`               |
+| 4    | Hostname string                                                                            | `G`                  |
+| 5    | ...                                                                                        | `A`                  |
+| 6    | ...                                                                                        | `M`                  |
+| 7    | ...                                                                                        | `E`                  |
+| 8    | ...                                                                                        | `.`                  |
+| 9    | ...                                                                                        | `S`                  |
+| 10   | ...                                                                                        | `E`                  |
+| 11   | ...                                                                                        | `R`                  |
+| 12   | ...                                                                                        | `V`                  |
+| 13   | ...                                                                                        | `E`                  |
+| 14   | ...                                                                                        | `R`                  |
+| 15   | ...                                                                                        | `.`                  |
+| 16   | ...                                                                                        | `N`                  |
+| 17   | ...                                                                                        | `E`                  |
+| 18   | ...                                                                                        | `T`                  |
 
 [Back to command list](#Commands-overview)
 
@@ -625,8 +668,8 @@ This command gets the server settings (IP address and port).
 
 ### SET_SERVER_SETTINGS
 
-This command sets the server settings (IP address and port).  
-It doesn't overwrite values set via the ESP web interface.  
+This command sets the current server settings (hostname and port).  
+It doesn't overwrite values set in the Rainbow config file.  
 
 | Byte | Description                                 | Example                          |
 | ---- | ------------------------------------------- | -------------------------------- |
@@ -644,6 +687,19 @@ It doesn't overwrite values set via the ESP web interface.
 | 11   | Hostname string                             | `N`                              |
 | 12   | Hostname string                             | `E`                              |
 | 13   | Hostname string                             | `T`                              |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### RESTORE_SERVER_SETTINGS
+
+This command sets the current server settings (hostname and port) to what is defined in the Rainbow config file.
+
+| Byte | Description                                 | Example                        |
+| ---- | ------------------------------------------- | ------------------------------ |
+| 0    | Length of the message (excluding this byte) | `1`                            |
+| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::RESTORE_SERVER_SETTINGS` |
 
 [Back to command list](#Commands-overview)
 
