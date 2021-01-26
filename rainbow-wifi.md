@@ -11,8 +11,8 @@ The Rainbow project is developed by Antoine Gohin / Broke Studio.
 
 Thanks to :
 
-- [Paul](https://twitter.com/InfiniteNesLive) / [InfiniteNesLives](http://www.infiniteneslives.com)  for taking time to explain me lots of hardware stuff
-- Christian Gohin, my father, who helped me designing the board
+- [Paul](https://twitter.com/InfiniteNesLive) / [InfiniteNesLives](http://www.infiniteneslives.com) for taking time to explain me lots of hardware stuff
+- Christian Gohin, my father, who helped me designing the first prototype board
 - [Sylvain Gadrat](https://sgadrat.itch.io/super-tilt-bro) aka [RogerBidon](https://twitter.com/RogerBidon) for helping me update [FCEUX](http://www.fceux.com) to emulate the Rainbow mapper ❤
 - The NES WiFi Club (cheers guys 😊)
 - [NESdev](http://www.nesdev.com) community
@@ -31,30 +31,36 @@ Thanks to :
   - [Buffers](#buffers)
   - [Messages format](#messages-format)
   - [Commands overview](#commands-overview)
-    - [NES to ESP commands](#nes-to-esp-commands)
-    - [ESP to NES commands](#esp-to-nes-commands)
+    - [Commands to the ESP](#commands-to-the-esp)
+    - [Commands from the ESP](#commands-from-the-esp)
   - [Commands details](#commands-details)
-    - [GET_ESP_STATUS](#get_esp_status)
+    - [ESP_GET_STATUS](#esp_get_status)
     - [DEBUG_GET_LEVEL](#debug_get_level)
     - [DEBUG_SET_LEVEL](#debug_set_level)
     - [DEBUG_LOG](#debug_log)
-    - [CLEAR_BUFFERS](#clear_buffers)
-    - [E2N_BUFFER_DROP](#e2n_buffer_drop)
-    - [GET_WIFI_STATUS](#get_wifi_status)
-    - [GET_RND_BYTE](#get_rnd_byte)
-    - [GET_RND_BYTE_RANGE](#get_rnd_byte_range)
-    - [GET_RND_WORD](#get_rnd_word)
-    - [GET_RND_WORD_RANGE](#get_rnd_word_range)
-    - [GET_SERVER_STATUS](#get_server_status)
-    - [GET_SERVER_PING](#get_server_ping)
-    - [SET_SERVER_PROTOCOL](#set_server_protocol)
-    - [GET_SERVER_SETTINGS](#get_server_settings)
-    - [GET_SERVER_CONFIG_SETTINGS](#get_server_config_settings)
-    - [SET_SERVER_SETTINGS](#set_server_settings)
-    - [RESTORE_SERVER_SETTINGS](#restore_server_settings)
-    - [CONNECT_SERVER](#connect_server)
-    - [DISCONNECT_SERVER](#disconnect_server)
-    - [SEND_MSG_TO_SERVER](#send_msg_to_server)
+    - [BUFFER_CLEAR_RX_TX](#buffer_clear_rx_tx)
+    - [BUFFER_DROP_FROM_ESP](#buffer_drop_from_esp)
+    - [WIFI_GET_STATUS](#wifi_get_status)
+    - [RND_GET_BYTE](#rnd_get_byte)
+    - [RND_GET_BYTE_RANGE](#rnd_get_byte_range)
+    - [RND_GET_WORD](#rnd_get_word)
+    - [RND_GET_WORD_RANGE](#rnd_get_word_range)
+    - [SERVER_GET_STATUS](#server_get_status)
+    - [SERVER_GET_PING](#server_get_ping)
+    - [SERVER_SET_PROTOCOL](#server_set_protocol)
+    - [SERVER_GET_SETTINGS](#server_get_settings)
+    - [SERVER_GET_CONFIG_SETTINGS](#server_get_config_settings)
+    - [SERVER_SET_SETTINGS](#server_set_settings)
+    - [SERVER_RESTORE_SETTINGS](#server_restore_settings)
+    - [SERVER_CONNECT](#server_connect)
+    - [SERVER_DISCONNECT](#server_disconnect)
+    - [SERVER_SEND_MESSAGE](#server_send_message)
+    - [NETWORK_SCAN](#network_scan)
+    - [NETWORK_GET_DETAILS](#network_get_details)
+    - [NETWORK_GET_REGISTERED](#network_get_registered)
+    - [NETWORK_GET_REGISTERED_DETAILS](#network_get_registered_details)
+    - [NETWORK_REGISTER](#network_register)
+    - [NETWORK_UNREGISTER](#network_unregister)
     - [FILE_OPEN](#file_open)
     - [FILE_CLOSE](#file_close)
     - [FILE_EXISTS](#file_exists)
@@ -139,7 +145,7 @@ Write to register $5000 to send byte to the ESP.
 
   lda #3                      ; message length
   sta $5000
-  lda #N2E::FILE_DELETE       ; command
+  lda #TO_ESP::FILE_DELETE    ; command
   sta $5000
   lda #FILE_PATHS::ROMS       ; paramater (path id)
   sta $5000
@@ -149,7 +155,7 @@ Write to register $5000 to send byte to the ESP.
   ; this is possible too
 
   lda #2
-  ldx #N2E::FILE_GET_LIST
+  ldx #TO_ESP::FILE_GET_LIST
   ldy #FILE_PATHS::ROMS
   sta $5000
   stx $5000
@@ -194,83 +200,104 @@ A message always have the same format and follows these rules:
 
 ## Commands overview
 
-### NES to ESP commands
+### Commands to the ESP
 
-| Value | N2E commands                                              | Description                                                               |
-| ----- | --------------------------------------------------------- | ------------------------------------------------------------------------- |
-| 0     | [GET_ESP_STATUS](#GET_ESP_STATUS)                         | Get ESP status                                                            |
-| 1     | [DEBUG_GET_LEVEL](#DEBUG_GET_LEVEL)                       | Get debug level                                                           |
-| 2     | [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL)                       | Set debug level                                                           |
-| 3     | [DEBUG_LOG](#DEBUG_LOG)                                   | Debug / Log data                                                          |
-| 4     | [CLEAR_BUFFERS](#CLEAR_BUFFERS)                           | Clear RX/TX buffers                                                       |
-| 5     | [E2N_BUFFER_DROP](#E2N_BUFFER_DROP)                       | Drop messages from TX (ESP->NES) buffer                                   |
-| 6     | [GET_WIFI_STATUS](#GET_WIFI_STATUS)                       | Get WiFi connection status                                                |
-| 7     | [GET_RND_BYTE](#GET_RND_BYTE)                             | Get random byte                                                           |
-| 8     | [GET_RND_BYTE_RANGE](#GET_RND_BYTE_RANGE)                 | Get random byte between custom min/max                                    |
-| 9     | [GET_RND_WORD](#GET_RND_WORD)                             | Get random word                                                           |
-| 10    | [GET_RND_WORD_RANGE](#GET_RND_WORD_RANGE)                 | Get random word between custom min/max                                    |
-| 11    | [GET_SERVER_STATUS](#GET_SERVER_STATUS)                   | Get server connection status                                              |
-| 12    | [GET_SERVER_PING](#GET_SERVER_PING)                       | Get ping between ESP and server                                           |
-| 13    | [SET_SERVER_PROTOCOL](#SET_SERVER_PROTOCOL)               | Set protocol to be used to communicate (WS/UDP)                           |
-| 14    | [GET_SERVER_SETTINGS](#GET_SERVER_SETTINGS)               | Get current server host name and port                                     |
-| 15    | [GET_SERVER_CONFIG_SETTINGS](#GET_SERVER_CONFIG_SETTINGS) | Get server host name and port defined in the Rainbow config file          |
-| 16    | [SET_SERVER_SETTINGS](#SET_SERVER_SETTINGS)               | Set current server host name and port                                     |
-| 17    | [RESTORE_SERVER_SETTINGS](#RESTORE_SERVER_SETTINGS)       | Restore server host name and port to values defined in the Rainbow config |
-| 18    | [CONNECT_SERVER](#CONNECT_SERVER)                         | Connect to server                                                         |
-| 19    | [DISCONNECT_SERVER](#DISCONNECT_SERVER)                   | Disconnect from server                                                    |
-| 20    | [SEND_MSG_TO_SERVER](#SEND_MSG_TO_SERVER)                 | Send message to rainbow server                                            |
-| 21    | [FILE_OPEN](#FILE_OPEN)                                   | Open working file                                                         |
-| 22    | [FILE_CLOSE](#FILE_CLOSE)                                 | Close working file                                                        |
-| 23    | [FILE_EXISTS](#FILE_EXISTS)                               | Check if file exists                                                      |
-| 24    | [FILE_DELETE](#FILE_DELETE)                               | Delete a file                                                             |
-| 25    | [FILE_SET_CUR](#FILE_SET_CUR)                             | Set working file cursor position a file                                   |
-| 26    | [FILE_READ](#FILE_READ)                                   | Read working file (at specific position)                                  |
-| 27    | [FILE_WRITE](#FILE_WRITE)                                 | Write working file (at specific position)                                 |
-| 28    | [FILE_APPEND](#FILE_APPEND)                               | Append data to working file                                               |
-| 29    | [FILE_COUNT](#FILE_COUNT)                                 | Get number of tiles in a specific path                                    |
-| 30    | [FILE_GET_LIST](#FILE_GET_LIST)                           | Get list of existing files in a specific path                             |
-| 31    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)                     | Get an unexisting file ID in a specific path.                             |
-| 32    | [FILE_GET_INFO](#FILE_GET_INFO)                           | Get file info (size + crc32)                                              |
+| Value | Command                                                           | Description                                                               |
+| ----- | ----------------------------------------------------------------- | ------------------------------------------------------------------------- |
+|       |                                                                   | **ESP CMDS**                                                              |
+| 0     | [ESP_GET_STATUS](#ESP_GET_STATUS)                                 | Get ESP status                                                            |
+| 1     | [DEBUG_GET_LEVEL](#DEBUG_GET_LEVEL)                               | Get debug level                                                           |
+| 2     | [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL)                               | Set debug level                                                           |
+| 3     | [DEBUG_LOG](#DEBUG_LOG)                                           | Debug / Log data                                                          |
+| 4     | [BUFFER_CLEAR_RX_TX](#BUFFER_CLEAR_RX_TX)                         | Clear RX/TX buffers                                                       |
+| 5     | [BUFFER_DROP_FROM_ESP](#BUFFER_DROP_FROM_ESP)                     | Drop messages from TX (ESP->NES) buffer                                   |
+| 6     | [WIFI_GET_STATUS](#WIFI_GET_STATUS)                               | Get WiFi connection status                                                |
+| 7     | [ESP_RESTART](#ESP_RESTART)                                       | Restart the ESP                                                           |
+|       |                                                                   | **RND CMDS**                                                              |
+| 8     | [RND_GET_BYTE](#RND_GET_BYTE)                                     | Get random byte                                                           |
+| 9     | [RND_GET_BYTE_RANGE](#RND_GET_BYTE_RANGE)                         | Get random byte between custom min/max                                    |
+| 10    | [RND_GET_WORD](#RND_GET_WORD)                                     | Get random word                                                           |
+| 11    | [RND_GET_WORD_RANGE](#RND_GET_WORD_RANGE)                         | Get random word between custom min/max                                    |
+|       |                                                                   | **SERVER CMDS**                                                           |
+| 12    | [SERVER_GET_STATUS](#SERVER_GET_STATUS)                           | Get server connection status                                              |
+| 13    | [SERVER_GET_PING](#SERVER_GET_PING)                               | Get ping between ESP and server                                           |
+| 14    | [SERVER_SET_PROTOCOL](#SERVER_SET_PROTOCOL)                       | Set protocol to be used to communicate (WS/UDP)                           |
+| 15    | [SERVER_GET_SETTINGS](#SERVER_GET_SETTINGS)                       | Get current server host name and port                                     |
+| 16    | [SERVER_GET_CONFIG_SETTINGS](#SERVER_GET_CONFIG_SETTINGS)         | Get server host name and port defined in the Rainbow config file          |
+| 17    | [SERVER_SET_SETTINGS](#SERVER_SET_SETTINGS)                       | Set current server host name and port                                     |
+| 18    | [SERVER_RESTORE_SETTINGS](#SERVER_RESTORE_SETTINGS)               | Restore server host name and port to values defined in the Rainbow config |
+| 19    | [SERVER_CONNECT](#SERVER_CONNECT)                                 | Connect to server                                                         |
+| 20    | [SERVER_DISCONNECT](#SERVER_DISCONNECT)                           | Disconnect from server                                                    |
+| 21    | [SERVER_SEND_MESSAGE](#SERVER_SEND_MESSAGE)                       | Send message to server                                                    |
+|       |                                                                   | **NETWORK CMDS**                                                          |
+| 22    | [NETWORK_SCAN](#NETWORK_SCAN)                                     | Scan networks around and return count                                     |
+| 23    | [NETWORK_GET_DETAILS](#NETWORK_GET_DETAILS)                       | Get network SSID                                                          |
+| 24    | [NETWORK_GET_REGISTERED](#NETWORK_GET_REGISTERED)                 | Get registered networks status                                            |
+| 25    | [NETWORK_GET_REGISTERED_DETAILS](#NETWORK_GET_REGISTERED_DETAILS) | Get registered network SSID                                               |
+| 26    | [NETWORK_REGISTER](#NETWORK_REGISTER)                             | Register network                                                          |
+| 27    | [NETWORK_UNREGISTER](#NETWORK_UNREGISTER)                         | Unregister network                                                        |
+|       |                                                                   | **FILE CMDS**                                                             |
+| 28    | [FILE_OPEN](#FILE_OPEN)                                           | Open working file                                                         |
+| 29    | [FILE_CLOSE](#FILE_CLOSE)                                         | Close working file                                                        |
+| 30    | [FILE_EXISTS](#FILE_EXISTS)                                       | Check if file exists                                                      |
+| 31    | [FILE_DELETE](#FILE_DELETE)                                       | Delete a file                                                             |
+| 32    | [FILE_SET_CUR](#FILE_SET_CUR)                                     | Set working file cursor position a file                                   |
+| 33    | [FILE_READ](#FILE_READ)                                           | Read working file (at specific position)                                  |
+| 34    | [FILE_WRITE](#FILE_WRITE)                                         | Write working file (at specific position)                                 |
+| 35    | [FILE_APPEND](#FILE_APPEND)                                       | Append data to working file                                               |
+| 36    | [FILE_COUNT](#FILE_COUNT)                                         | Get number of tiles in a specific path                                    |
+| 37    | [FILE_GET_LIST](#FILE_GET_LIST)                                   | Get list of existing files in a specific path                             |
+| 38    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)                             | Get an unexisting file ID in a specific path.                             |
+| 39    | [FILE_GET_INFO](#FILE_GET_INFO)                                   | Get file info (size + crc32)                                              |
 
-### ESP to NES commands
+### Commands from the ESP
 
-| Value | E2N commands                               | Description |
-| ----- | ------------------------------------------ | ----------- |
-| 0     | [READY](#GET_ESP_STATUS)                   |             |
-| 1     | [DEBUG_LEVEL](#DEBUG_GET_LEVEL)            |             |
-| 2     | [FILE_EXISTS](#FILE_EXISTS)                |             |
-| 3     | [FILE_DELETE](#FILE_DELETE)                |             |
-| 4     | [FILE_LIST](#FILE_GET_LIST)                |             |
-| 5     | [FILE_DATA](#FILE_READ)                    |             |
-| 6     | [FILE_COUNT](#FILE_COUNT)                  |             |
-| 7     | [FILE_ID](#FILE_GET_FREE_ID)               |             |
-| 8     | [FILE_INFO](#FILE_GET_INFO)                |             |
-| 9     | [WIFI_STATUS](#GET_WIFI_STATUS)            |             |
-| 10    | [SERVER_STATUS](#GET_SERVER_STATUS)        |             |
-| 11    | [SERVER_PING](#GET_SERVER_PING)            |             |
-| 12    | [HOST_SETTINGS](#GET_SERVER_SETTINGS)      |             |
-| 13    | [RND_BYTE](#GET_RND_BYTE)                  |             |
-| 14    | [RND_WORD](#GET_RND_WORD)                  |             |
-| 15    | [MESSAGE_FROM_SERVER](#SEND_MSG_TO_SERVER) |             |
+| Value | Command                                                       | Description      |
+| ----- | ------------------------------------------------------------- | ---------------- |
+|       |                                                               | **ESP CMDS**     |
+| 0     | [READY](#ESP_GET_STATUS)                                      |                  |
+| 1     | [DEBUG_LEVEL](#DEBUG_GET_LEVEL)                               |                  |
+| 2     | [WIFI_STATUS](#WIFI_GET_STATUS)                               |                  |
+|       |                                                               | **RND CMDS**     |
+| 18    | [RND_BYTE](#RND_GET_BYTE)                                     |                  |
+| 19    | [RND_WORD](#RND_GET_WORD)                                     |                  |
+|       |                                                               | **NETWORK CMDS** |
+| 10    | [NETWORK_COUNT](#NETWORK_SCAN)                                |                  |
+| 11    | [NETWORK_SCANNED_DETAILS](#NETWORK_GET_SCANNED_DETAILS)       |                  |
+| 12    | [NETWORK_REGISTERED_DETAILS](#NETWORK_GET_REGISTERED_DETAILS) |                  |
+| 13    | [NETWORK_REGISTERED](#NETWORK_GET_REGISTERED)                 |                  |
+|       |                                                               | **SERVER CMDS**  |
+| 14    | [SERVER_STATUS](#SERVER_GET_STATUS)                           |                  |
+| 15    | [SERVER_PING](#SERVER_GET_PING)                               |                  |
+| 16    | [HOST_SETTINGS](#SERVER_GET_SETTINGS)                         |                  |
+| 17    | [MESSAGE_FROM_SERVER](#SERVER_SEND_MESSAGE)                   |                  |
+|       |                                                               | **FILE CMDS**    |
+| 3     | [FILE_EXISTS](#FILE_EXISTS)                                   |                  |
+| 4     | [FILE_DELETE](#FILE_DELETE)                                   |                  |
+| 5     | [FILE_LIST](#FILE_GET_LIST)                                   |                  |
+| 6     | [FILE_DATA](#FILE_READ)                                       |                  |
+| 7     | [FILE_COUNT](#FILE_COUNT)                                     |                  |
+| 8     | [FILE_ID](#FILE_GET_FREE_ID)                                  |                  |
+| 9     | [FILE_INFO](#FILE_GET_INFO)                                   |                  |
 
 ## Commands details
 
-### GET_ESP_STATUS
+### ESP_GET_STATUS
 
 This command asks the WiFi module if it's ready.  
 The ESP will only answer when ready, so once you sent the message, just wait for the answer.  
 
-| Byte | Description                                 | Example               |
-| ---- | ------------------------------------------- | --------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                   |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::GET_ESP_STATUS` |
+| Byte | Description                                 | Example          |
+| ---- | ------------------------------------------- | ---------------- |
+| 0    | Length of the message (excluding this byte) | `1`              |
+| 1    | Command ID (see commands to ESP)            | `ESP_GET_STATUS` |
 
 **Returns:**
 
-| Byte | Description                                 | Example      |
-| ---- | ------------------------------------------- | ------------ |
-| 0    | Length of the message (excluding this byte) | `1`          |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::READY` |
+| Byte | Description                                 | Example |
+| ---- | ------------------------------------------- | ------- |
+| 0    | Length of the message (excluding this byte) | `1`     |
+| 1    | Command ID (see commands from ESP)          | `READY` |
 
 [Back to command list](#Commands-overview)
 
@@ -280,18 +307,18 @@ The ESP will only answer when ready, so once you sent the message, just wait for
 
 This command returns the debug level. 
 
-| Byte | Description                                 | Example                |
-| ---- | ------------------------------------------- | ---------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                    |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_GET_LEVEL` |
+| Byte | Description                                 | Example           |
+| ---- | ------------------------------------------- | ----------------- |
+| 0    | Length of the message (excluding this byte) | `1`               |
+| 1    | Command ID (see commands to ESP)            | `DEBUG_GET_LEVEL` |
 
 **Returns:**
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `2`                |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::DEBUG_LEVEL` |
-| 2    | Debug configuration value                   | `0`                |
+| Byte | Description                                 | Example       |
+| ---- | ------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte) | `2`           |
+| 1    | Command ID (see commands from ESP)          | `DEBUG_LEVEL` |
+| 2    | Debug configuration value                   | `0`           |
 
 See [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL) command for debug level value details
 
@@ -303,11 +330,11 @@ See [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL) command for debug level value details
 
 This command sets the debug level. 
 
-| Byte | Description                                 | Example                |
-| ---- | ------------------------------------------- | ---------------------- |
-| 0    | Length of the message (excluding this byte) | `2`                    |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_SET_LEVEL` |
-| 2    | Debug level value                           | `1`                    |
+| Byte | Description                                 | Example           |
+| ---- | ------------------------------------------- | ----------------- |
+| 0    | Length of the message (excluding this byte) | `2`               |
+| 1    | Command ID (see commands to ESP)            | `DEBUG_SET_LEVEL` |
+| 2    | Debug level value                           | `1`               |
 
 **The debug level value uses bits like this:**
 
@@ -334,19 +361,19 @@ This command logs data on the serial port of the ESP.
 Can be read using a UART/USB adapter, RX to pin 5 of the ESP board edge connector, GND to pin 6.  
 Bit 1 of the debug level needs to be set (see [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL)).  
 
-| Byte | Description                                 | Example          |
-| ---- | ------------------------------------------- | ---------------- |
-| 0    | Length of the message (excluding this byte) | `4`              |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DEBUG_LOG` |
-| 2    | Data length                                 | `2`              |
-| 3    | Data                                        | `0x41`           |
-| 4    | Data                                        | `0xAC`           |
+| Byte | Description                                 | Example     |
+| ---- | ------------------------------------------- | ----------- |
+| 0    | Length of the message (excluding this byte) | `4`         |
+| 1    | Command ID (see commands to ESP)            | `DEBUG_LOG` |
+| 2    | Data length                                 | `2`         |
+| 3    | Data                                        | `0x41`      |
+| 4    | Data                                        | `0xAC`      |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### CLEAR_BUFFERS
+### BUFFER_CLEAR_RX_TX
 
 This command clears TX/RX buffers.  
 Can be use on startup to make sure that we start with a clean setup.
@@ -354,43 +381,43 @@ Can be use on startup to make sure that we start with a clean setup.
 | Byte | Description                                 | Example              |
 | ---- | ------------------------------------------- | -------------------- |
 | 0    | Length of the message (excluding this byte) | `1`                  |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::CLEAR_BUFFERS` |
+| 1    | Command ID (see commands to ESP)            | `BUFFER_CLEAR_RX_TX` |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### E2N_BUFFER_DROP
+### BUFFER_DROP_FROM_ESP
 
 This command drops messages of a given type from TX (ESP->NES) buffer.  
 You can keep the most recent messages using the second parameter.  
 
-| Byte | Description                                     | Example                    |
-| ---- | ----------------------------------------------- | -------------------------- |
-| 0    | Length of the message (excluding this byte)     | `3`                        |
-| 1    | Command ID (see NES 2 ESP commands list)        | `N2E::E2N_BUFFER_DROP`     |
-| 2    | Message type / ID (see ESP 2 NES commands list) | `E2N::MESSAGE_FROM_SERVER` |
-| 3    | Number of most recent messages to keep          | `1`                        |
+| Byte | Description                                 | Example                |
+| ---- | ------------------------------------------- | ---------------------- |
+| 0    | Length of the message (excluding this byte) | `3`                    |
+| 1    | Command ID (see commands to ESP)            | `BUFFER_DROP_FROM_ESP` |
+| 2    | Message type / ID (see commands to ESP)     | `MESSAGE_FROM_SERVER`  |
+| 3    | Number of most recent messages to keep      | `1`                    |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### GET_WIFI_STATUS
+### WIFI_GET_STATUS
 
 This command asks the WiFi status.
 
-| Byte | Description                                 | Example                |
-| ---- | ------------------------------------------- | ---------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                    |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_WIFI_STATUS` |
+| Byte | Description                                 | Example           |
+| ---- | ------------------------------------------- | ----------------- |
+| 0    | Length of the message (excluding this byte) | `1`               |
+| 1    | Command ID (see commands to ESP)            | `WIFI_GET_STATUS` |
 
 **Returns:**
 
 | Byte | Description                                 | Example                  |
 | ---- | ------------------------------------------- | ------------------------ |
 | 0    | Length of the message (excluding this byte) | `2`                      |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::WIFI_STATUS`       |
+| 1    | Command ID (see commands from ESP)          | `WIFI_STATUS`            |
 | 2    | WiFi status (see below)                     | `WIFI_STATUS::CONNECTED` |
 
 **WiFi status:**
@@ -410,113 +437,113 @@ This command asks the WiFi status.
 
 ---
 
-### GET_RND_BYTE
+### RND_GET_BYTE
 
 This command returns a random byte between 0 and 255.
 
-| Byte | Description                                 | Example             |
-| ---- | ------------------------------------------- | ------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                 |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_RND_BYTE` |
+| Byte | Description                                 | Example        |
+| ---- | ------------------------------------------- | -------------- |
+| 0    | Length of the message (excluding this byte) | `1`            |
+| 1    | Command ID (see commands to ESP)            | `RND_GET_BYTE` |
 
 **Returns:**
 
-| Byte | Description                                 | Example         |
-| ---- | ------------------------------------------- | --------------- |
-| 0    | Length of the message (excluding this byte) | `2`             |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::RND_BYTE` |
-| 2    | Random value between 0 and 255              | `0xAA`          |
+| Byte | Description                                 | Example    |
+| ---- | ------------------------------------------- | ---------- |
+| 0    | Length of the message (excluding this byte) | `2`        |
+| 1    | Command ID (see commands from ESP)          | `RND_BYTE` |
+| 2    | Random value between 0 and 255              | `0xAA`     |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### GET_RND_BYTE_RANGE
+### RND_GET_BYTE_RANGE
 
 This command returns a random byte between custom min and max values.  
 
-| Byte | Description                                 | Example                   |
-| ---- | ------------------------------------------- | ------------------------- |
-| 0    | Length of the message (excluding this byte) | `3`                       |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_RND_BYTE_RANGE` |
-| 2    | Custom min value (0 to 254)                 | `0x00`                    |
-| 3    | Custom max value (1 to 255)                 | `0x80`                    |
+| Byte | Description                                 | Example              |
+| ---- | ------------------------------------------- | -------------------- |
+| 0    | Length of the message (excluding this byte) | `3`                  |
+| 1    | Command ID (see commands to ESP)            | `RND_GET_BYTE_RANGE` |
+| 2    | Custom min value (0 to 254)                 | `0x00`               |
+| 3    | Custom max value (1 to 255)                 | `0x80`               |
 
 **Returns:**
 
-| Byte | Description                                 | Example         |
-| ---- | ------------------------------------------- | --------------- |
-| 0    | Length of the message (excluding this byte) | `2`             |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::RND_BYTE` |
-| 2    | Random value between 0 and 255              | `0x14`          |
+| Byte | Description                                 | Example    |
+| ---- | ------------------------------------------- | ---------- |
+| 0    | Length of the message (excluding this byte) | `2`        |
+| 1    | Command ID (see commands from ESP)          | `RND_BYTE` |
+| 2    | Random value between 0 and 255              | `0x14`     |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### GET_RND_WORD
+### RND_GET_WORD
 
 This command returns a random word between 0 and 65535.
+
+| Byte | Description                                 | Example        |
+| ---- | ------------------------------------------- | -------------- |
+| 0    | Length of the message (excluding this byte) | `1`            |
+| 1    | Command ID (see commands to ESP)            | `RND_GET_WORD` |
+
+**Returns:**
+
+| Byte | Description                                 | Example    |
+| ---- | ------------------------------------------- | ---------- |
+| 0    | Length of the message (excluding this byte) | `3`        |
+| 1    | Command ID (see commands from ESP)          | `RND_WORD` |
+| 2    | Random value HI byte                        | `0xA7`     |
+| 3    | Random value LO byte                        | `0xEF`     |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### RND_GET_WORD_RANGE
+
+This command returns a random word between custom min and max values.
+
+| Byte | Description                                 | Example              |
+| ---- | ------------------------------------------- | -------------------- |
+| 0    | Length of the message (excluding this byte) | `5`                  |
+| 1    | Command ID (see commands to ESP)            | `RND_GET_WORD_RANGE` |
+| 2    | Custom min value (0 to 65534) HI byte       | `0x00`               |
+| 3    | Custom min value (0 to 65534) LO byte       | `0x00`               |
+| 4    | Custom max value (1 to 65535) HI byte       | `0x20`               |
+| 5    | Custom max value (1 to 65535) LO byte       | `0x00`               |
+
+**Returns:**
+
+| Byte | Description                                 | Example    |
+| ---- | ------------------------------------------- | ---------- |
+| 0    | Length of the message (excluding this byte) | `3`        |
+| 1    | Command ID (see commands from ESP)          | `RND_WORD` |
+| 2    | Random value HI byte                        | `0x06`     |
+| 3    | Random value LO byte                        | `0x82`     |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### SERVER_GET_STATUS
+
+This command asks the server status.
 
 | Byte | Description                                 | Example             |
 | ---- | ------------------------------------------- | ------------------- |
 | 0    | Length of the message (excluding this byte) | `1`                 |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_RND_WORD` |
-
-**Returns:**
-
-| Byte | Description                                 | Example         |
-| ---- | ------------------------------------------- | --------------- |
-| 0    | Length of the message (excluding this byte) | `3`             |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::RND_WORD` |
-| 2    | Random value HI byte                        | `0xA7`          |
-| 3    | Random value LO byte                        | `0xEF`          |
-
-[Back to command list](#Commands-overview)
-
----
-
-### GET_RND_WORD_RANGE
-
-This command returns a random word between custom min and max values.
-
-| Byte | Description                                 | Example                   |
-| ---- | ------------------------------------------- | ------------------------- |
-| 0    | Length of the message (excluding this byte) | `5`                       |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_RND_WORD_RANGE` |
-| 2    | Custom min value (0 to 65534) HI byte       | `0x00`                    |
-| 3    | Custom min value (0 to 65534) LO byte       | `0x00`                    |
-| 4    | Custom max value (1 to 65535) HI byte       | `0x20`                    |
-| 5    | Custom max value (1 to 65535) LO byte       | `0x00`                    |
-
-**Returns:**
-
-| Byte | Description                                 | Example         |
-| ---- | ------------------------------------------- | --------------- |
-| 0    | Length of the message (excluding this byte) | `3`             |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::RND_WORD` |
-| 2    | Random value HI byte                        | `0x06`          |
-| 3    | Random value LO byte                        | `0x82`          |
-
-[Back to command list](#Commands-overview)
-
----
-
-### GET_SERVER_STATUS
-
-This command asks the server status.
-
-| Byte | Description                                 | Example                  |
-| ---- | ------------------------------------------- | ------------------------ |
-| 0    | Length of the message (excluding this byte) | `1`                      |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_SERVER_STATUS` |
+| 1    | Command ID (see commands to ESP)            | `SERVER_GET_STATUS` |
 
 **Returns:**
 
 | Byte | Description                                 | Example                    |
 | ---- | ------------------------------------------- | -------------------------- |
 | 0    | Length of the message (excluding this byte) | `2`                        |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::SERVER_STATUS`       |
+| 1    | Command ID (see commands from ESP)          | `SERVER_STATUS`            |
 | 2    | Server status (see below)                   | `SERVER_STATUS::CONNECTED` |
 
 **Server status:**
@@ -530,54 +557,54 @@ This command asks the server status.
 
 ---
 
-### GET_SERVER_PING
+### SERVER_GET_PING
 
 This command pings the server and returns the min, max and average round-trip time and number of lost packets.  
 If another ping is already in progress, the command will be ignored.  
 Returned round-trip time is divided by 4 to fit in only 1 byte, so time precision is 4ms.  
 If no number of pings is passed, the default value will be 4.  
 
-| Byte | Description                                                            | Example                |
-| ---- | ---------------------------------------------------------------------- | ---------------------- |
-| 0    | Length of the message (excluding this byte)                            | `1` or `2`             |
-| 1    | Command ID (see NES 2 ESP commands list)                               | `N2E::GET_SERVER_PING` |
-|      | *the next byte is required if you want to specify the number of pings* |                        |
-| 2    | Number of pings                                                        | `4`                    |
-|      | *if 0 is passed, this will perform 4 pings by default*                 |                        |
+| Byte | Description                                                            | Example           |
+| ---- | ---------------------------------------------------------------------- | ----------------- |
+| 0    | Length of the message (excluding this byte)                            | `1` or `2`        |
+| 1    | Command ID (see commands to ESP)                                       | `SERVER_GET_PING` |
+|      | *the next byte is required if you want to specify the number of pings* |                   |
+| 2    | Number of pings                                                        | `4`               |
+|      | *if 0 is passed, this will perform 4 pings by default*                 |                   |
 
 **Returns:**
 
 Following message will be sent if server hostname couldn't be resolved or is empty:
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `1`                |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::SERVER_PING` |
+| Byte | Description                                 | Example       |
+| ---- | ------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte) | `1`           |
+| 1    | Command ID (see commands from ESP)          | `SERVER_PING` |
 
 Following message will be sent after ping:
 
-| Byte | Description                                  | Example            |
-| ---- | -------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte)  | `5`                |
-| 1    | Command ID (see ESP to NES commands list)    | `E2N::SERVER_PING` |
-| 2    | Minimum ping round-trip time (4ms precision) | `0x2D`             |
-| 3    | Maximum ping round-trip time (4ms precision) | `0x42`             |
-| 4    | Average ping round-trip time (4ms precision) | `0x37`             |
-| 5    | Number of lost packets                       | `0x01`             |
+| Byte | Description                                  | Example       |
+| ---- | -------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte)  | `5`           |
+| 1    | Command ID (see commands from ESP)           | `SERVER_PING` |
+| 2    | Minimum ping round-trip time (4ms precision) | `0x2D`        |
+| 3    | Maximum ping round-trip time (4ms precision) | `0x42`        |
+| 4    | Average ping round-trip time (4ms precision) | `0x37`        |
+| 5    | Number of lost packets                       | `0x01`        |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### SET_SERVER_PROTOCOL
+### SERVER_SET_PROTOCOL
 
 This command sets the protocol to be use when talking to game server.
 
-| Byte | Description                                 | Example                    |
-| ---- | ------------------------------------------- | -------------------------- |
-| 0    | Length of the message (excluding this byte) | `2`                        |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::SET_SERVER_PROTOCOL` |
-| 2    | Protocol value (see below)                  | `PROTOCOL::WS`             |
+| Byte | Description                                 | Example               |
+| ---- | ------------------------------------------- | --------------------- |
+| 0    | Length of the message (excluding this byte) | `2`                   |
+| 1    | Command ID (see commands to ESP)            | `SERVER_SET_PROTOCOL` |
+| 2    | Protocol value (see below)                  | `PROTOCOL::WS`        |
 
 **Protocol values:**
 
@@ -590,83 +617,83 @@ This command sets the protocol to be use when talking to game server.
 
 ---
 
-### GET_SERVER_SETTINGS
+### SERVER_GET_SETTINGS
 
 This command returns the current server settings (hostname and port).  
 
-| Byte | Description                                 | Example                    |
-| ---- | ------------------------------------------- | -------------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                        |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_SERVER_SETTINGS` |
+| Byte | Description                                 | Example               |
+| ---- | ------------------------------------------- | --------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                   |
+| 1    | Command ID (see commands to ESP)            | `SERVER_GET_SETTINGS` |
 
 **Returns:**
 
-| Byte | Description                                                                                | Example              |
-| ---- | ------------------------------------------------------------------------------------------ | -------------------- |
-| 0    | Length of the message (excluding this byte)                                                | `1` or more          |
-| 1    | Command ID (see ESP to NES commands list)                                                  | `E2N::HOST_SETTINGS` |
-|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                      |
-| 2    | Port MSB                                                                                   | `0x0B`               |
-| 3    | Port LSB                                                                                   | `0xB8`               |
-| 4    | Hostname string                                                                            | `G`                  |
-| 5    | ...                                                                                        | `A`                  |
-| 6    | ...                                                                                        | `M`                  |
-| 7    | ...                                                                                        | `E`                  |
-| 8    | ...                                                                                        | `.`                  |
-| 9    | ...                                                                                        | `S`                  |
-| 10   | ...                                                                                        | `E`                  |
-| 11   | ...                                                                                        | `R`                  |
-| 12   | ...                                                                                        | `V`                  |
-| 13   | ...                                                                                        | `E`                  |
-| 14   | ...                                                                                        | `R`                  |
-| 15   | ...                                                                                        | `.`                  |
-| 16   | ...                                                                                        | `N`                  |
-| 17   | ...                                                                                        | `E`                  |
-| 18   | ...                                                                                        | `T`                  |
+| Byte | Description                                                                                | Example         |
+| ---- | ------------------------------------------------------------------------------------------ | --------------- |
+| 0    | Length of the message (excluding this byte)                                                | `1` or more     |
+| 1    | Command ID (see commands from ESP)                                                         | `HOST_SETTINGS` |
+|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                 |
+| 2    | Port MSB                                                                                   | `0x0B`          |
+| 3    | Port LSB                                                                                   | `0xB8`          |
+| 4    | Hostname string                                                                            | `G`             |
+| 5    | ...                                                                                        | `A`             |
+| 6    | ...                                                                                        | `M`             |
+| 7    | ...                                                                                        | `E`             |
+| 8    | ...                                                                                        | `.`             |
+| 9    | ...                                                                                        | `S`             |
+| 10   | ...                                                                                        | `E`             |
+| 11   | ...                                                                                        | `R`             |
+| 12   | ...                                                                                        | `V`             |
+| 13   | ...                                                                                        | `E`             |
+| 14   | ...                                                                                        | `R`             |
+| 15   | ...                                                                                        | `.`             |
+| 16   | ...                                                                                        | `N`             |
+| 17   | ...                                                                                        | `E`             |
+| 18   | ...                                                                                        | `T`             |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### GET_SERVER_CONFIG_SETTINGS
+### SERVER_GET_CONFIG_SETTINGS
 
 This command returns the server settings (hostname and port) from the Rainbow config file.  
 
-| Byte | Description                                 | Example                           |
-| ---- | ------------------------------------------- | --------------------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                               |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::GET_SERVER_CONFIG_SETTINGS` |
+| Byte | Description                                 | Example                      |
+| ---- | ------------------------------------------- | ---------------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                          |
+| 1    | Command ID (see commands to ESP)            | `SERVER_GET_CONFIG_SETTINGS` |
 
 **Returns:**
 
-| Byte | Description                                                                                | Example              |
-| ---- | ------------------------------------------------------------------------------------------ | -------------------- |
-| 0    | Length of the message (excluding this byte)                                                | `1` or more          |
-| 1    | Command ID (see ESP to NES commands list)                                                  | `E2N::HOST_SETTINGS` |
-|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                      |
-| 2    | Port MSB                                                                                   | `0x0B`               |
-| 3    | Port LSB                                                                                   | `0xB8`               |
-| 4    | Hostname string                                                                            | `G`                  |
-| 5    | ...                                                                                        | `A`                  |
-| 6    | ...                                                                                        | `M`                  |
-| 7    | ...                                                                                        | `E`                  |
-| 8    | ...                                                                                        | `.`                  |
-| 9    | ...                                                                                        | `S`                  |
-| 10   | ...                                                                                        | `E`                  |
-| 11   | ...                                                                                        | `R`                  |
-| 12   | ...                                                                                        | `V`                  |
-| 13   | ...                                                                                        | `E`                  |
-| 14   | ...                                                                                        | `R`                  |
-| 15   | ...                                                                                        | `.`                  |
-| 16   | ...                                                                                        | `N`                  |
-| 17   | ...                                                                                        | `E`                  |
-| 18   | ...                                                                                        | `T`                  |
+| Byte | Description                                                                                | Example         |
+| ---- | ------------------------------------------------------------------------------------------ | --------------- |
+| 0    | Length of the message (excluding this byte)                                                | `1` or more     |
+| 1    | Command ID (see commands from ESP)                                                         | `HOST_SETTINGS` |
+|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                 |
+| 2    | Port MSB                                                                                   | `0x0B`          |
+| 3    | Port LSB                                                                                   | `0xB8`          |
+| 4    | Hostname string                                                                            | `G`             |
+| 5    | ...                                                                                        | `A`             |
+| 6    | ...                                                                                        | `M`             |
+| 7    | ...                                                                                        | `E`             |
+| 8    | ...                                                                                        | `.`             |
+| 9    | ...                                                                                        | `S`             |
+| 10   | ...                                                                                        | `E`             |
+| 11   | ...                                                                                        | `R`             |
+| 12   | ...                                                                                        | `V`             |
+| 13   | ...                                                                                        | `E`             |
+| 14   | ...                                                                                        | `R`             |
+| 15   | ...                                                                                        | `.`             |
+| 16   | ...                                                                                        | `N`             |
+| 17   | ...                                                                                        | `E`             |
+| 18   | ...                                                                                        | `T`             |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### SET_SERVER_SETTINGS
+### SERVER_SET_SETTINGS
 
 This command sets the current server settings (hostname and port).  
 It doesn't overwrite values set in the Rainbow config file.  
@@ -674,7 +701,7 @@ It doesn't overwrite values set in the Rainbow config file.
 | Byte | Description                                 | Example                          |
 | ---- | ------------------------------------------- | -------------------------------- |
 | 0    | Length of the message (excluding this byte) | `18` (depends on message length) |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::SET_SERVER_SETTINGS`       |
+| 1    | Command ID (see commands to ESP)            | `SERVER_SET_SETTINGS`            |
 | 2    | Port MSB                                    | `0x0B`                           |
 | 3    | Port LSB                                    | `0xB8`                           |
 | 4    | Hostname string                             | `S`                              |
@@ -692,58 +719,224 @@ It doesn't overwrite values set in the Rainbow config file.
 
 ---
 
-### RESTORE_SERVER_SETTINGS
+### SERVER_RESTORE_SETTINGS
 
 This command sets the current server settings (hostname and port) to what is defined in the Rainbow config file.
 
-| Byte | Description                                 | Example                        |
-| ---- | ------------------------------------------- | ------------------------------ |
-| 0    | Length of the message (excluding this byte) | `1`                            |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::RESTORE_SERVER_SETTINGS` |
+| Byte | Description                                 | Example                   |
+| ---- | ------------------------------------------- | ------------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                       |
+| 1    | Command ID (see commands to ESP)            | `SERVER_RESTORE_SETTINGS` |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### CONNECT_SERVER
+### SERVER_CONNECT
 
 When using WS protocol, this command connects to server.  
 When using UDP protocol, this command starts the UDP server on the ESP side using a random port between 49152 and 65535.  
 
-| Byte | Description                                 | Example               |
-| ---- | ------------------------------------------- | --------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                   |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::CONNECT_SERVER` |
+| Byte | Description                                 | Example          |
+| ---- | ------------------------------------------- | ---------------- |
+| 0    | Length of the message (excluding this byte) | `1`              |
+| 1    | Command ID (see commands to ESP)            | `SERVER_CONNECT` |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### DISCONNECT_SERVER
+### SERVER_DISCONNECT
 
 When using WS protocol, this command disconnects from server.  
 When using UDP protocol, this command stops the UDP server on the ESP side.  
 
-| Byte | Description                                 | Example                  |
-| ---- | ------------------------------------------- | ------------------------ |
-| 0    | Length of the message (excluding this byte) | `1`                      |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::DISCONNECT_SERVER` |
+| Byte | Description                                 | Example             |
+| ---- | ------------------------------------------- | ------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                 |
+| 1    | Command ID (see commands to ESP)            | `SERVER_DISCONNECT` |
 
 [Back to command list](#Commands-overview)
 
 ---
 
-### SEND_MSG_TO_SERVER
+### SERVER_SEND_MESSAGE
 
 This command sends a message to the server.  
 
 | Byte | Description                                 | Example                          |
 | ---- | ------------------------------------------- | -------------------------------- |
 | 0    | Length of the message (excluding this byte) | `30` (depends on message length) |
-| 1    | Command ID (see NES 2 ESP commands list)    | `N2E::SEND_MSG_TO_SERVER`        |
+| 1    | Command ID (see commands to ESP)            | `SERVER_SEND_MESSAGE`            |
 | 2    | Data                                        | `0xAA`                           |
 | ...  | Data                                        | `0x12`                           |
 | 30   | Data                                        | `0xE9`                           |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### NETWORK_SCAN
+
+This command scans the networks around and returns the number of networks found.  
+
+| Byte | Description                                 | Example        |
+| ---- | ------------------------------------------- | -------------- |
+| 0    | Length of the message (excluding this byte) | `1`            |
+| 1    | Command ID (see commands to ESP)            | `NETWORK_SCAN` |
+
+**Returns:**
+
+| Byte | Description                                 | Example         |
+| ---- | ------------------------------------------- | --------------- |
+| 0    | Length of the message (excluding this byte) | `2`             |
+| 1    | Command ID (see commands from ESP)          | `NETWORK_COUNT` |
+| 2    | Network count                               | `3`             |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### NETWORK_GET_DETAILS
+
+This command returns the network SSID of a scanned network referenced by the passed ID.  
+
+| Byte | Description                                 | Example               |
+| ---- | ------------------------------------------- | --------------------- |
+| 0    | Length of the message (excluding this byte) | `2`                   |
+| 1    | Command ID (see commands to ESP)            | `NETWORK_GET_DETAILS` |
+| 2    | Network ID                                  | `0x01`                |
+
+**Returns:**
+
+| Byte | Description                                 | Example                                       |
+| ---- | ------------------------------------------- | --------------------------------------------- |
+| 0    | Length of the message (excluding this byte) | `13` (depends on message length)              |
+|      |                                             | (max is 43 because SSID is 32 characters max) |
+| 1    | Command ID (see commands from ESP)          | `NETWORK_SCANNED_DETAILS`                     |
+| 2    | Encryption type                             | `4` (see below for details)                   |
+| 3    | RSSI (absolute value)                       | `0x47` (means -70 DbM)                        |
+| 4    | Channel LSB                                 | `0x00`                                        |
+| 5    | Channel                                     | `0x00`                                        |
+| 6    | Channel                                     | `0x00`                                        |
+| 7    | Channel MSB                                 | `0x01`                                        |
+| 8    | Hidden?                                     | `0` (0: no / 1: yes))                         |
+| 9    | SSID string length                          | `4`                                           |
+| 10   | SSID string                                 | `S`                                           |
+| 11   | SSID string                                 | `S`                                           |
+| 12   | SSID string                                 | `I`                                           |
+| 13   | SSID string                                 | `D`                                           |
+
+**Encryption types:**
+
+| Value | Description      |
+| ----- | ---------------- |
+| 5     | WEP              |
+| 2     | WPA / PSK        |
+| 4     | WPA2 / PSK       |
+| 7     | open network     |
+| 8     | WPA / WPA2 / PSK |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### NETWORK_GET_REGISTERED
+
+The Rainbow configuration can hold up to 3 network settings.  
+This command returns 1 or 0 if an SSID/password is registered or not for each network.  
+
+| Byte | Description                                 | Example                  |
+| ---- | ------------------------------------------- | ------------------------ |
+| 0    | Length of the message (excluding this byte) | `1`                      |
+| 1    | Command ID (see commands to ESP)            | `NETWORK_GET_REGISTERED` |
+
+**Returns:**
+
+| Byte | Description                                 | Example              |
+| ---- | ------------------------------------------- | -------------------- |
+| 0    | Length of the message (excluding this byte) | `4`                  |
+| 1    | Command ID (see commands from ESP)          | `NETWORK_REGISTERED` |
+| 2    | Network 1 status                            | `1`                  |
+| 3    | Network 2 status                            | `1`                  |
+| 4    | Network 3 status                            | `0`                  |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### NETWORK_GET_REGISTERED_DETAILS
+
+The Rainbow configuration can hold up to 3 network settings.  
+This command returns the SSID of the requested configuration network.  
+
+| Byte | Description                                 | Example                          |
+| ---- | ------------------------------------------- | -------------------------------- |
+| 0    | Length of the message (excluding this byte) | `2`                              |
+| 1    | Command ID (see commands to ESP)            | `NETWORK_GET_REGISTERED_DETAILS` |
+| 2    | Network ID                                  | `0`                              |
+
+**Returns:**
+
+| Byte | Description                                 | Example                         |
+| ---- | ------------------------------------------- | ------------------------------- |
+| 0    | Length of the message (excluding this byte) | `6` (depends on message length) |
+| 1    | Command ID (see commands from ESP)          | `NETWORK_REGISTERED_DETAILS`    |
+| 2    | SSID string length                          | `4`                             |
+| 3    | SSID string                                 | `S`                             |
+| 4    | SSID string                                 | `S`                             |
+| 5    | SSID string                                 | `I`                             |
+| 6    | SSID string                                 | `D`                             |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### NETWORK_REGISTER
+
+The Rainbow configuration can hold up to 3 network settings.  
+This command registers a network in one of the spots.  
+
+| Byte | Description                                 | Example                          |
+| ---- | ------------------------------------------- | -------------------------------- |
+| 0    | Length of the message (excluding this byte) | `16` (depends on message length) |
+| 1    | Command ID (see commands to ESP)            | `NETWORK_REGISTER`               |
+| 2    | Network ID                                  | `0`                              |
+| 3    | SSID string length                          | `4`                              |
+| 4    | SSID string                                 | `S`                              |
+| 5    | SSID string                                 | `S`                              |
+| 6    | SSID string                                 | `I`                              |
+| 7    | SSID string                                 | `D`                              |
+| 8    | PASSWORD string length                      | `8`                              |
+| 9    | PASSWORD string                             | `P`                              |
+| 10   | PASSWORD string                             | `A`                              |
+| 11   | PASSWORD string                             | `S`                              |
+| 12   | PASSWORD string                             | `S`                              |
+| 13   | PASSWORD string                             | `W`                              |
+| 14   | PASSWORD string                             | `O`                              |
+| 15   | PASSWORD string                             | `R`                              |
+| 16   | PASSWORD string                             | `D`                              |
+
+**Notes:**
+- Strings can only use ASCII characters between 0x20 to 0x7E.  
+- SSID is 32 characters max.
+- Password is 64 characters max.
+- Current ESP WiFi settings will be reset to take in account modification immediately.
+
+[Back to command list](#Commands-overview)
+
+---
+
+### NETWORK_UNREGISTER
+
+The Rainbow configuration can hold up to 3 network settings.  
+This command unregister a network from one of the spots.  
+
+| Byte | Description                                 | Example              |
+| ---- | ------------------------------------------- | -------------------- |
+| 0    | Length of the message (excluding this byte) | `2`                  |
+| 1    | Command ID (see commands to ESP)            | `NETWORK_UNREGISTER` |
+| 2    | Network ID                                  | `0`                  |
 
 [Back to command list](#Commands-overview)
 
@@ -759,7 +952,7 @@ If another file is already open, it will be closed.
 | Byte | Description                                 | Example            |
 | ---- | ------------------------------------------- | ------------------ |
 | 0    | Length of the message (excluding this byte) | `3`                |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_OPEN`   |
+| 1    | Command ID (see commands to ESP)            | `FILE_OPEN`        |
 | 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
 | 3    | File index                                  | `5 (0 to 63)`      |
 
@@ -779,10 +972,10 @@ If another file is already open, it will be closed.
 
 This command closes the working file.  
 
-| Byte | Description                                 | Example           |
-| ---- | ------------------------------------------- | ----------------- |
-| 0    | Length of the message (excluding this byte) | `1`               |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_CLOSE` |
+| Byte | Description                                 | Example      |
+| ---- | ------------------------------------------- | ------------ |
+| 0    | Length of the message (excluding this byte) | `1`          |
+| 1    | Command ID (see commands to ESP)            | `FILE_CLOSE` |
 
 [Back to command list](#Commands-overview)
 
@@ -796,7 +989,7 @@ This command returns 1 if the file exists, or 0 if it doesn't.
 | Byte | Description                                 | Example            |
 | ---- | ------------------------------------------- | ------------------ |
 | 0    | Length of the message (excluding this byte) | `3`                |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_EXISTS` |
+| 1    | Command ID (see commands to ESP)            | `FILE_EXISTS`      |
 | 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
 | 3    | File index                                  | `5 (0 to 63)`      |
 
@@ -810,11 +1003,11 @@ This command returns 1 if the file exists, or 0 if it doesn't.
 
 **Returns:**
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `2`                |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::FILE_EXISTS` |
-| 2    | Returns 1 if file exists, 0 otherwise       | `0` or `1`         |
+| Byte | Description                                 | Example       |
+| ---- | ------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte) | `2`           |
+| 1    | Command ID (see commands from ESP)          | `FILE_EXISTS` |
+| 2    | Returns 1 if file exists, 0 otherwise       | `0` or `1`    |
 
 [Back to command list](#Commands-overview)
 
@@ -827,7 +1020,7 @@ This command deletes (if exists) the file corresponding of the passed index.
 | Byte | Description                                 | Example            |
 | ---- | ------------------------------------------- | ------------------ |
 | 0    | Length of the message (excluding this byte) | `3`                |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_DELETE` |
+| 1    | Command ID (see commands to ESP)            | `FILE_DELETE`      |
 | 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
 | 3    | File index                                  | `5 (0 to 63)`      |
 
@@ -841,11 +1034,11 @@ This command deletes (if exists) the file corresponding of the passed index.
 
 **Returns:**
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `2`                |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::FILE_DELETE` |
-| 2    | Result code                                 | `0` or `1` or `2`  |
+| Byte | Description                                 | Example           |
+| ---- | ------------------------------------------- | ----------------- |
+| 0    | Length of the message (excluding this byte) | `2`               |
+| 1    | Command ID (see commands from ESP)          | `FILE_DELETE`     |
+| 2    | Result code                                 | `0` or `1` or `2` |
 
 **Result codes:**
 
@@ -864,14 +1057,14 @@ This command deletes (if exists) the file corresponding of the passed index.
 This command sets the position of the working file cursor.  
 If the file is smaller than the passed offset, it'll be filled with 0x00.  
 
-| Byte    | Description                                 | Example             |
-| ------- | ------------------------------------------- | ------------------- |
-| 0       | Length of the message (excluding this byte) | `2 to 5`            |
-| 1       | Command ID (see NES to ESP commands list)   | `N2E::FILE_SET_CUR` |
-| 2       | Offset LSB                                  | `0x00`              |
-| 3 (opt) | Offset                                      | `0x00`              |
-| 4 (opt) | Offset                                      | `0x10`              |
-| 5 (opt) | Offset MSB                                  | `0x00`              |
+| Byte    | Description                                 | Example        |
+| ------- | ------------------------------------------- | -------------- |
+| 0       | Length of the message (excluding this byte) | `2 to 5`       |
+| 1       | Command ID (see commands to ESP)            | `FILE_SET_CUR` |
+| 2       | Offset LSB                                  | `0x00`         |
+| 3 (opt) | Offset                                      | `0x00`         |
+| 4 (opt) | Offset                                      | `0x10`         |
+| 5 (opt) | Offset MSB                                  | `0x00`         |
 
 [Back to command list](#Commands-overview)
 
@@ -886,7 +1079,7 @@ If there is working file currently open, number of bytes will be 0.
 | Byte | Description                                 | Example          |
 | ---- | ------------------------------------------- | ---------------- |
 | 0    | Length of the message (excluding this byte) | `2`              |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_READ` |
+| 1    | Command ID (see commands to ESP)            | `FILE_READ`      |
 | 2    | Number of bytes to read                     | `64` (minimum 1) |
 
 **Returns:**
@@ -894,7 +1087,7 @@ If there is working file currently open, number of bytes will be 0.
 | Byte | Description                                 | Example                                   |
 | ---- | ------------------------------------------- | ----------------------------------------- |
 | 0    | Length of the message (excluding this byte) | `5` (depends on the number of bytes read) |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::FILE_DATA`                          |
+| 1    | Command ID (see commands from ESP)          | `FILE_DATA`                               |
 | 2    | Number of bytes returned                    | `03`                                      |
 | 3    | Data                                        | `0x12`                                    |
 | 4    | Data                                        | `0xDA`                                    |
@@ -913,7 +1106,7 @@ This command writes data to the working file.
 | Byte | Description                                 | Example                                             |
 | ---- | ------------------------------------------- | --------------------------------------------------- |
 | 0    | Length of the message (excluding this byte) | `66`  (depends on how many bytes you want to write) |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_WRITE`                                   |
+| 1    | Command ID (see commands to ESP)            | `FILE_WRITE`                                        |
 | 2    | Data                                        | `0x5F`                                              |
 | ...  | Data                                        | `...`                                               |
 | 66   | Data                                        | `0xAF`                                              |
@@ -930,7 +1123,7 @@ The current cursor position is not affected.
 | Byte | Description                                 | Example                                            |
 | ---- | ------------------------------------------- | -------------------------------------------------- |
 | 0    | Length of the message (excluding this byte) | `66` (depends on how many bytes you want to write) |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_APPEND`                                 |
+| 1    | Command ID (see commands to ESP)            | `FILE_APPEND`                                      |
 | 2    | Data                                        | `0x5F`                                             |
 | ...  | Data                                        | `...`                                              |
 | 66   | Data                                        | `0xAF`                                             |
@@ -943,10 +1136,10 @@ The current cursor position is not affected.
 
 This command sends the number of files in a specific path.  
 
-| Byte | Description                                 | Example           |
-| ---- | ------------------------------------------- | ----------------- |
-| 0    | Length of the message (excluding this byte) | `1`               |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_COUNT` |
+| Byte | Description                                 | Example      |
+| ---- | ------------------------------------------- | ------------ |
+| 0    | Length of the message (excluding this byte) | `1`          |
+| 1    | Command ID (see commands to ESP)            | `FILE_COUNT` |
 
 **File paths:**
 
@@ -955,15 +1148,16 @@ This command sends the number of files in a specific path.
 | 0     | SAVE       | Use this folder to load/save game data          |
 | 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
 | 2     | USER       | Use this folder to read/write data for the user |
+
 [Back to command list](#Commands-overview)
 
 **Returns:**
 
-| Byte | Description                                 | Example           |
-| ---- | ------------------------------------------- | ----------------- |
-| 0    | Length of the message (excluding this byte) | `2`               |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::FILE_COUNT` |
-| 2    | Number of files                             | `3`               |
+| Byte | Description                                 | Example      |
+| ---- | ------------------------------------------- | ------------ |
+| 0    | Length of the message (excluding this byte) | `2`          |
+| 1    | Command ID (see commands from ESP)          | `FILE_COUNT` |
+| 2    | Number of files                             | `3`          |
 
 ---
 
@@ -971,14 +1165,14 @@ This command sends the number of files in a specific path.
 
 Get list of existing files in a specific path.  
 
-| Byte | Description                                                          | Example              |
-| ---- | -------------------------------------------------------------------- | -------------------- |
-| 0    | Length of the message (excluding this byte)                          | `2` or more          |
-| 1    | Command ID (see NES to ESP commands list)                            | `N2E::FILE_GET_LIST` |
-| 2    | File path (see FILE_PATHS)                                           | `FILE_PATHS::SAVE`   |
-|      | *the next bytes are required if you want to use a pagination system* |                      |
-| 3    | Page size (number of files per page)                                 | `9`                  |
-| 4    | Current page (0 indexed)                                             | `1`                  |
+| Byte | Description                                                          | Example            |
+| ---- | -------------------------------------------------------------------- | ------------------ |
+| 0    | Length of the message (excluding this byte)                          | `2` or more        |
+| 1    | Command ID (see commands to ESP)                                     | `FILE_GET_LIST`    |
+| 2    | File path (see FILE_PATHS)                                           | `FILE_PATHS::SAVE` |
+|      | *the next bytes are required if you want to use a pagination system* |                    |
+| 3    | Page size (number of files per page)                                 | `9`                |
+| 4    | Current page (0 indexed)                                             | `1`                |
 
 **File paths:**
 
@@ -990,15 +1184,15 @@ Get list of existing files in a specific path.
 
 **Returns:**
 
-| Byte | Description                                  | Example          |
-| ---- | -------------------------------------------- | ---------------- |
-| 0    | Length of the message (excluding this byte)  | `2` or more      |
-| 1    | Command ID (see ESP to NES commands list)    | `E2N::FILE_LIST` |
-| 2    | Number of files                              | `3`              |
-|      | *next bytes are returned if files are found* |                  |
-| 3    | File index                                   | `1`              |
-| 4    | File index                                   | `5`              |
-| 5    | File index                                   | `10`             |
+| Byte | Description                                  | Example     |
+| ---- | -------------------------------------------- | ----------- |
+| 0    | Length of the message (excluding this byte)  | `2` or more |
+| 1    | Command ID (see commands from ESP)           | `FILE_LIST` |
+| 2    | Number of files                              | `3`         |
+|      | *next bytes are returned if files are found* |             |
+| 3    | File index                                   | `1`         |
+| 4    | File index                                   | `5`         |
+| 5    | File index                                   | `10`        |
 
 [Back to command list](#Commands-overview)
 
@@ -1008,11 +1202,11 @@ Get list of existing files in a specific path.
 
 Get an unexisting file ID in a specific path.
 
-| Byte | Description                                 | Example                 |
-| ---- | ------------------------------------------- | ----------------------- |
-| 0    | Length of the message (excluding this byte) | `2`                     |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_GET_FREE_ID` |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE`      |
+| Byte | Description                                 | Example            |
+| ---- | ------------------------------------------- | ------------------ |
+| 0    | Length of the message (excluding this byte) | `2`                |
+| 1    | Command ID (see commands to ESP)            | `FILE_GET_FREE_ID` |
+| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
 
 **File paths:**
 
@@ -1024,12 +1218,12 @@ Get an unexisting file ID in a specific path.
 
 **Returns:**
 
-| Byte | Description                                        | Example        |
-| ---- | -------------------------------------------------- | -------------- |
-| 0    | Length of the message (excluding this byte)        | `1` or more    |
-| 1    | Command ID (see ESP to NES commands list)          | `E2N::FILE_ID` |
-|      | *next byte is returned if a free file ID is found* |                |
-| 2    | File ID                                            | `3`            |
+| Byte | Description                                        | Example     |
+| ---- | -------------------------------------------------- | ----------- |
+| 0    | Length of the message (excluding this byte)        | `1` or more |
+| 1    | Command ID (see commands from ESP)                 | `FILE_ID`   |
+|      | *next byte is returned if a free file ID is found* |             |
+| 2    | File ID                                            | `3`         |
 
 [Back to command list](#Commands-overview)
 
@@ -1039,12 +1233,12 @@ Get an unexisting file ID in a specific path.
 
 This command returns file info (size in bytes and crc32).  
 
-| Byte | Description                                 | Example              |
-| ---- | ------------------------------------------- | -------------------- |
-| 0    | Length of the message (excluding this byte) | `3`                  |
-| 1    | Command ID (see NES to ESP commands list)   | `N2E::FILE_GET_INFO` |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE`   |
-| 3    | File index                                  | `5 (0 to 63)`        |
+| Byte | Description                                 | Example            |
+| ---- | ------------------------------------------- | ------------------ |
+| 0    | Length of the message (excluding this byte) | `3`                |
+| 1    | Command ID (see commands to ESP)            | `FILE_GET_INFO`    |
+| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
+| 3    | File index                                  | `5 (0 to 63)`      |
 
 **File paths:**
 
@@ -1056,19 +1250,19 @@ This command returns file info (size in bytes and crc32).
 
 **Returns:**
 
-| Byte | Description                                 | Example          |
-| ---- | ------------------------------------------- | ---------------- |
-| 0    | Length of the message (excluding this byte) | `1` or `9`       |
-| 1    | Command ID (see ESP to NES commands list)   | `E2N::FILE_INFO` |
-|      | *next bytes are returned if file is  found* |                  |
-| 2    | CRC32 MSB                                   | `3B`             |
-| 3    | CRC32                                       | `84`             |
-| 4    | CRC32                                       | `E6`             |
-| 5    | CRC32 LSB                                   | `FB`             |
-| 6    | Size MSB                                    | `00`             |
-| 7    | Size                                        | `00`             |
-| 8    | Size                                        | `10`             |
-| 9    | Size LSB                                    | `00`             |
+| Byte | Description                                 | Example     |
+| ---- | ------------------------------------------- | ----------- |
+| 0    | Length of the message (excluding this byte) | `1` or `9`  |
+| 1    | Command ID (see commands from ESP)          | `FILE_INFO` |
+|      | *next bytes are returned if file is  found* |             |
+| 2    | CRC32 MSB                                   | `3B`        |
+| 3    | CRC32                                       | `84`        |
+| 4    | CRC32                                       | `E6`        |
+| 5    | CRC32 LSB                                   | `FB`        |
+| 6    | Size MSB                                    | `00`        |
+| 7    | Size                                        | `00`        |
+| 8    | Size                                        | `10`        |
+| 9    | Size LSB                                    | `00`        |
 
 [Back to command list](#Commands-overview)
 

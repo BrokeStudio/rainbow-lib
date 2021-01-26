@@ -13,17 +13,31 @@
 ; ################################################################################
 ; ALIASES
 
-  enableIRQ   = RNBW_enableIRQ
-  disableIRQ  = RNBW_disableIRQ
-  getData     = RNBW_getData
-  sendData    = RNBW_sendData
-  waitReady   = RNBW_waitReady
-  debugA      = RNBW_debug_A
-  debug_A     = RNBW_debug_A
-  debugX      = RNBW_debug_X
-  debug_X     = RNBW_debug_X
-  debugY      = RNBW_debug_Y
-  debug_Y     = RNBW_debug_Y
+  enableIRQ           = RNBW_enableIRQ
+  disableIRQ          = RNBW_disableIRQ
+  getData             = RNBW_getData
+  sendData            = RNBW_sendData
+  waitReady           = RNBW_waitReady
+  debugA              = RNBW_debug_A
+  debug_A             = RNBW_debug_A
+  debugX              = RNBW_debug_X
+  debug_X             = RNBW_debug_X
+  debugY              = RNBW_debug_Y
+  debug_Y             = RNBW_debug_Y
+  getRandomByte       = RNBW_getRandomByte
+  getRandomByteRange  = RNBW_getRandomByteRange
+  getRandomWord       = RNBW_getRandomWord
+  getRandomWordRange  = RNBW_getRandomWordRange
+
+; ################################################################################
+; ZEROPAGE
+
+.pushseg
+.zeropage
+
+rnbwTmp:  .res 2
+
+.popseg
 
 ; ################################################################################
 ; MACROS
@@ -74,12 +88,18 @@
   .endproc
 
   .proc RNBW_sendData
+    ; A: message pointer lo byte
+    ; X: message pointer hi byte
+
+    sta rnbwTmp+0
+    stx rnbwTmp+1
 
     ldy #0
-    ldx BUF_OUT+0
+    lda (rnbwTmp),y
+    tax
     inx
   :
-    lda BUF_OUT,Y
+    lda (rnbwTmp),y
     sta $5000
     iny
     dex
@@ -87,7 +107,6 @@
 
     ; return
     rts
-
   .endproc
 
   .proc RNBW_getData
@@ -114,7 +133,7 @@
     ; ask for ESP status
     lda #1
     sta $5000
-    lda #N2E::GET_ESP_STATUS
+    lda #TO_ESP::ESP_GET_STATUS
     sta $5000
 
     ; wait for answer
@@ -132,7 +151,7 @@
 
 /*
     lda BUF_IN+1
-    cmp #E2N::READY
+    cmp #FROM_ESP::READY
     beq done
 
     lda $5001
@@ -151,7 +170,7 @@
     pha
     lda #2
     sta $5000
-    lda #N2E::DEBUG_LOG
+    lda #TO_ESP::DEBUG_LOG
     sta $5000
     pla
     sta $5000 ; DATA
@@ -166,7 +185,7 @@
     ; data to debug in X
     lda #2
     sta $5000
-    lda #N2E::DEBUG_LOG
+    lda #TO_ESP::DEBUG_LOG
     sta $5000
     stx $5000 ; DATA
 
@@ -180,7 +199,7 @@
     ; data to debug in Y
     lda #2
     sta $5000
-    lda #N2E::DEBUG_LOG
+    lda #TO_ESP::DEBUG_LOG
     sta $5000
     sty $5000 ; DATA
 
@@ -194,7 +213,7 @@
     ; ask for wifi status
     lda #1
     sta $5000
-    lda #N2E::GET_WIFI_STATUS
+    lda #TO_ESP::WIFI_GET_STATUS
     sta $5000
 
     ; wait for answer
@@ -218,7 +237,7 @@
     ; ask for server status
     lda #1
     sta $5000
-    lda #N2E::GET_SERVER_STATUS
+    lda #TO_ESP::SERVER_GET_STATUS
     sta $5000
 
     ; wait for answer
@@ -234,6 +253,58 @@
 
     ; return
     rts
+
+  .endproc
+
+  .proc RNBW_getRandomByte
+
+    lda #1
+    sta $5000
+    lda #TO_ESP::RND_GET_BYTE
+    sta $5000
+    RNBW_waitResponse
+    jmp RNBW_getData
+
+  .endproc
+
+  .proc RNBW_getRandomByteRange
+    ; X: min
+    ; Y: max
+
+    lda #3
+    sta $5000
+    lda #TO_ESP::RND_GET_BYTE_RANGE
+    sta $5000
+    stx $5000
+    sty $5000
+    RNBW_waitResponse
+    jmp RNBW_getData
+
+  .endproc
+
+  .proc RNBW_getRandomWord
+
+    lda #1
+    sta $5000
+    lda #TO_ESP::RND_GET_WORD
+    sta $5000
+    RNBW_waitResponse
+    jmp RNBW_getData
+
+  .endproc
+
+  .proc RNBW_getRandomWordRange
+    ; X: min
+    ; Y: max
+
+    lda #3
+    sta $5000
+    lda #TO_ESP::RND_GET_WORD_RANGE
+    sta $5000
+    stx $5000
+    sty $5000
+    RNBW_waitResponse
+    jmp RNBW_getData
 
   .endproc
 
