@@ -608,10 +608,13 @@ This command sets the protocol to be use when talking to game server.
 
 **Protocol values:**
 
-| Value | PROTOCOL | Description |
-| ----- | -------- | ----------- |
-| 0     | WS       | WebSocket   |
-| 1     | UDP      | UDP         |
+| Value | PROTOCOL | Description       |
+| ----- | -------- | ----------------- |
+| 0     | WS       | WebSocket         |
+| 1     | WS_S     | WebSocket Secured |
+| 2     | TCP      | TCP               |
+| 3     | TCP_S    | TCP Secured       |
+| 4     | UDP      | UDP               |
 
 [Back to command list](#Commands-overview)
 
@@ -734,7 +737,8 @@ This command sets the current server settings (hostname and port) to what is def
 
 ### SERVER_CONNECT
 
-When using WS protocol, this command connects to server.  
+When using WS protocol, this command connects to the server.  
+When using TCP protocol, this command conects to the server.  
 When using UDP protocol, this command starts the UDP server on the ESP side using a random port between 49152 and 65535.  
 
 | Byte | Description                                 | Example          |
@@ -749,6 +753,7 @@ When using UDP protocol, this command starts the UDP server on the ESP side usin
 ### SERVER_DISCONNECT
 
 When using WS protocol, this command disconnects from server.  
+When using TCP protocol, this command disconnects from server.  
 When using UDP protocol, this command stops the UDP server on the ESP side.  
 
 | Byte | Description                                 | Example             |

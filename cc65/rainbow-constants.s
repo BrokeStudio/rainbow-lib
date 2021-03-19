@@ -106,6 +106,9 @@
 ; Server protocols
 .enum SERVER_PROTOCOLS
   WS
+  WS_S
+  TCP
+  TCP_S
   UDP
 .endenum
 
