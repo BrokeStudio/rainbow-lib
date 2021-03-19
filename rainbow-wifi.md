@@ -221,7 +221,7 @@ A message always have the same format and follows these rules:
 |       |                                                                   | **SERVER CMDS**                                                           |
 | 12    | [SERVER_GET_STATUS](#SERVER_GET_STATUS)                           | Get server connection status                                              |
 | 13    | [SERVER_GET_PING](#SERVER_GET_PING)                               | Get ping between ESP and server                                           |
-| 14    | [SERVER_SET_PROTOCOL](#SERVER_SET_PROTOCOL)                       | Set protocol to be used to communicate (WS/UDP)                           |
+| 14    | [SERVER_SET_PROTOCOL](#SERVER_SET_PROTOCOL)                       | Set protocol to be used to communicate (WS/TCP/UDP)                       |
 | 15    | [SERVER_GET_SETTINGS](#SERVER_GET_SETTINGS)                       | Get current server host name and port                                     |
 | 16    | [SERVER_GET_CONFIG_SETTINGS](#SERVER_GET_CONFIG_SETTINGS)         | Get server host name and port defined in the Rainbow config file          |
 | 17    | [SERVER_SET_SETTINGS](#SERVER_SET_SETTINGS)                       | Set current server host name and port                                     |
@@ -259,26 +259,26 @@ A message always have the same format and follows these rules:
 | 1     | [DEBUG_LEVEL](#DEBUG_GET_LEVEL)                               |                  |
 | 2     | [WIFI_STATUS](#WIFI_GET_STATUS)                               |                  |
 |       |                                                               | **RND CMDS**     |
-| 18    | [RND_BYTE](#RND_GET_BYTE)                                     |                  |
-| 19    | [RND_WORD](#RND_GET_WORD)                                     |                  |
+| 3     | [RND_BYTE](#RND_GET_BYTE)                                     |                  |
+| 4     | [RND_WORD](#RND_GET_WORD)                                     |                  |
 |       |                                                               | **NETWORK CMDS** |
-| 10    | [NETWORK_COUNT](#NETWORK_SCAN)                                |                  |
-| 11    | [NETWORK_SCANNED_DETAILS](#NETWORK_GET_SCANNED_DETAILS)       |                  |
-| 12    | [NETWORK_REGISTERED_DETAILS](#NETWORK_GET_REGISTERED_DETAILS) |                  |
-| 13    | [NETWORK_REGISTERED](#NETWORK_GET_REGISTERED)                 |                  |
+| 5     | [NETWORK_COUNT](#NETWORK_SCAN)                                |                  |
+| 6     | [NETWORK_SCANNED_DETAILS](#NETWORK_GET_SCANNED_DETAILS)       |                  |
+| 7     | [NETWORK_REGISTERED_DETAILS](#NETWORK_GET_REGISTERED_DETAILS) |                  |
+| 8     | [NETWORK_REGISTERED](#NETWORK_GET_REGISTERED)                 |                  |
 |       |                                                               | **SERVER CMDS**  |
-| 14    | [SERVER_STATUS](#SERVER_GET_STATUS)                           |                  |
-| 15    | [SERVER_PING](#SERVER_GET_PING)                               |                  |
-| 16    | [HOST_SETTINGS](#SERVER_GET_SETTINGS)                         |                  |
-| 17    | [MESSAGE_FROM_SERVER](#SERVER_SEND_MESSAGE)                   |                  |
+| 9     | [SERVER_STATUS](#SERVER_GET_STATUS)                           |                  |
+| 10    | [SERVER_PING](#SERVER_GET_PING)                               |                  |
+| 11    | [HOST_SETTINGS](#SERVER_GET_SETTINGS)                         |                  |
+| 12    | [MESSAGE_FROM_SERVER](#SERVER_SEND_MESSAGE)                   |                  |
 |       |                                                               | **FILE CMDS**    |
-| 3     | [FILE_EXISTS](#FILE_EXISTS)                                   |                  |
-| 4     | [FILE_DELETE](#FILE_DELETE)                                   |                  |
-| 5     | [FILE_LIST](#FILE_GET_LIST)                                   |                  |
-| 6     | [FILE_DATA](#FILE_READ)                                       |                  |
-| 7     | [FILE_COUNT](#FILE_COUNT)                                     |                  |
-| 8     | [FILE_ID](#FILE_GET_FREE_ID)                                  |                  |
-| 9     | [FILE_INFO](#FILE_GET_INFO)                                   |                  |
+| 13    | [FILE_EXISTS](#FILE_EXISTS)                                   |                  |
+| 14    | [FILE_DELETE](#FILE_DELETE)                                   |                  |
+| 15    | [FILE_LIST](#FILE_GET_LIST)                                   |                  |
+| 16    | [FILE_DATA](#FILE_READ)                                       |                  |
+| 17    | [FILE_COUNT](#FILE_COUNT)                                     |                  |
+| 18    | [FILE_ID](#FILE_GET_FREE_ID)                                  |                  |
+| 19    | [FILE_INFO](#FILE_GET_INFO)                                   |                  |
 
 ## Commands details
 
