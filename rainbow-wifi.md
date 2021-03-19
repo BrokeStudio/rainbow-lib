@@ -73,6 +73,7 @@ Thanks to :
     - [FILE_GET_LIST](#file_get_list)
     - [FILE_GET_FREE_ID](#file_get_free_id)
     - [FILE_GET_INFO](#file_get_info)
+    - [FILE_DOWNLOAD](#file_download)
   - [Bootloader](#bootloader)
   - [TODO](#todo)
 
@@ -249,6 +250,7 @@ A message always have the same format and follows these rules:
 | 37    | [FILE_GET_LIST](#FILE_GET_LIST)                                   | Get list of existing files in a specific path                             |
 | 38    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)                             | Get an unexisting file ID in a specific path.                             |
 | 39    | [FILE_GET_INFO](#FILE_GET_INFO)                                   | Get file info (size + crc32)                                              |
+| 40    | [FILE_DOWNLOAD](#FILE_DOWNLOAD)                                   | Download a file from a giving URL to a specific path index / file index   |
 
 ### Commands from the ESP
 
@@ -279,6 +281,7 @@ A message always have the same format and follows these rules:
 | 17    | [FILE_COUNT](#FILE_COUNT)                                     |                  |
 | 18    | [FILE_ID](#FILE_GET_FREE_ID)                                  |                  |
 | 19    | [FILE_INFO](#FILE_GET_INFO)                                   |                  |
+| 20    | [FILE_DOWNLOAD](#FILE_DOWNLOAD)                               |                  |
 
 ## Commands details
 
@@ -1268,6 +1271,61 @@ This command returns file info (size in bytes and crc32).
 | 7    | Size                                        | `00`        |
 | 8    | Size                                        | `10`        |
 | 9    | Size LSB                                    | `00`        |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### FILE_DOWNLOAD
+
+This command downloads a file from a specific URL to a specific path index / file index.  
+The URL must use HTTP or HTTPS protocol.  
+
+| Byte | Description                                 | Example                          |
+| ---- | ------------------------------------------- | -------------------------------- |
+| 0    | Length of the message (excluding this byte) | `34` (depends on message length) |
+| 1    | Command ID (see commands to ESP)            | `FILE_DOWNLOAD`                  |
+| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE`               |
+| 3    | File ID                                     | `3`                              |
+| 4    | URL String                                  | `h`                              |
+| 5    | URL String                                  | `t`                              |
+| 6    | URL String                                  | `t`                              |
+| 7    | URL String                                  | `p`                              |
+| 8    | URL String                                  | `s`                              |
+| 9    | URL String                                  | `:`                              |
+| 10   | URL String                                  | `/`                              |
+| 11   | URL String                                  | `/`                              |
+| 12   | URL String                                  | `b`                              |
+| 13   | URL String                                  | `r`                              |
+| 14   | URL String                                  | `o`                              |
+| 15   | URL String                                  | `k`                              |
+| 16   | URL String                                  | `e`                              |
+| 17   | URL String                                  | `s`                              |
+| 18   | URL String                                  | `t`                              |
+| 19   | URL String                                  | `u`                              |
+| 20   | URL String                                  | `d`                              |
+| 21   | URL String                                  | `i`                              |
+| 22   | URL String                                  | `o`                              |
+| 23   | URL String                                  | `.`                              |
+| 24   | URL String                                  | `f`                              |
+| 25   | URL String                                  | `r`                              |
+| 26   | URL String                                  | `/`                              |
+| 27   | URL String                                  | `f`                              |
+| 28   | URL String                                  | `i`                              |
+| 29   | URL String                                  | `l`                              |
+| 30   | URL String                                  | `e`                              |
+| 31   | URL String                                  | `.`                              |
+| 32   | URL String                                  | `t`                              |
+| 33   | URL String                                  | `x`                              |
+| 34   | URL String                                  | `t`                              |
+
+**Returns:**
+
+| Byte | Description                                 | Example         |
+| ---- | ------------------------------------------- | --------------- |
+| 0    | Length of the message (excluding this byte) | `2`             |
+| 1    | Command ID (see commands from ESP)          | `FILE_DOWNLOAD` |
+| 2    | Download result, 0 (failed) or 1 (success)  | `1`             |
 
 [Back to command list](#Commands-overview)
 

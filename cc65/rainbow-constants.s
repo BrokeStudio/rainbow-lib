@@ -53,6 +53,7 @@
   FILE_GET_LIST                   ; Get list of existing files in a path
   FILE_GET_FREE_ID                ; Get an unexisting file ID in a specific path
   FILE_GET_INFO                   ; Get file info (size + crc32)
+  FILE_DOWNLOAD                   ; Download a file from a giving URL to a specific path index / file index
 
 .endenum
 
@@ -88,6 +89,7 @@
   FILE_COUNT                      ; Returns file count in a specific path
   FILE_ID                         ; Returns a free file ID (FILE_GET_FREE_ID)
   FILE_INFO                       ; Returns file info (size + CRC32) (FILE_GET_INFO)
+  FILE_DOWNLOAD                   ; Returns 0 or 1 depending on if the file has been successfully download or not
 
 .endenum
 

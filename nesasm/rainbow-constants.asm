@@ -52,6 +52,7 @@ TOESP_FILE_COUNT                      = 36  ; Count files in a specific path
 TOESP_FILE_GET_LIST                   = 37  ; Get list of existing files in a path
 TOESP_FILE_GET_FREE_ID                = 38  ; Get an unexisting file ID in a specific path
 TOESP_FILE_GET_INFO                   = 39  ; Get file info (size + crc32)
+TOESP_FILE_DOWNLOAD                   = 40  ; Download a file from a giving URL to a specific path index / file index
 
 ; commands from ESP
 
@@ -84,6 +85,7 @@ FROMESP_FILE_DATA                     = 16  ; Returns file data (FILE_READ)
 FROMESP_FILE_COUNT                    = 17  ; Returns file count in a specific path
 FROMESP_FILE_ID                       = 18  ; Returns a free file ID (FILE_GET_FREE_ID)
 FROMESP_FILE_INFO                     = 19  ; Returns file info (size + CRC32) (FILE_GET_INFO)
+FROMESP_FILE_DOWNLOAD                 = 20  ; Returns 0 or 1 depending on if the file has been successfully download or not
 
 ; WiFi status
 RNBW_WIFI_NO_SHIELD = 255
