@@ -52,7 +52,7 @@ TOESP_FILE_COUNT                      = 36  ; Count files in a specific path
 TOESP_FILE_GET_LIST                   = 37  ; Get list of existing files in a path
 TOESP_FILE_GET_FREE_ID                = 38  ; Get an unexisting file ID in a specific path
 TOESP_FILE_GET_INFO                   = 39  ; Get file info (size + crc32)
-TOESP_FILE_DOWNLOAD                   = 40  ; Download a file from a giving URL to a specific path index / file index
+TOESP_FILE_DOWNLOAD                   = 40  ; Download a file
 
 ; commands from ESP
 
@@ -79,13 +79,13 @@ FROMESP_NETWORK_REGISTERED            = 12  ; Returns registered networks status
 
 ; FILE CMDS
 FROMESP_FILE_EXISTS                   = 13  ; Returns if file exists or not
-FROMESP_FILE_DELETE                   = 14  ; Returns when trying to delete a file
+FROMESP_FILE_DELETE                   = 14  ; See RNBW_FILE_DELETE_xxx constants for details on returned value
 FROMESP_FILE_LIST                     = 15  ; Returns path file list (FILE_GET_LIST)
 FROMESP_FILE_DATA                     = 16  ; Returns file data (FILE_READ)
 FROMESP_FILE_COUNT                    = 17  ; Returns file count in a specific path
 FROMESP_FILE_ID                       = 18  ; Returns a free file ID (FILE_GET_FREE_ID)
 FROMESP_FILE_INFO                     = 19  ; Returns file info (size + CRC32) (FILE_GET_INFO)
-FROMESP_FILE_DOWNLOAD                 = 20  ; Returns 0 or 1 depending on if the file has been successfully download or not
+FROMESP_FILE_DOWNLOAD                 = 20  ; See RNBW_FILE_DOWNLOAD_xxx constants for details on returned value
 
 ; WiFi status
 RNBW_WIFI_NO_SHIELD = 255
@@ -123,6 +123,18 @@ RNBW_NETWORK_ENCTYPE_WPA_PSK = 2
 RNBW_NETWORK_ENCTYPE_WPA2_PSK = 4
 RNBW_NETWORK_ENCTYPE_OPEN_NETWORK = 7
 RNBW_NETWORK_ENCTYPE_WPA_WPA2_PSK = 8
+
+; FILE_DELETE return values
+RNBW_FILE_DELETE_SUCCESS = 0
+RNBW_FILE_DELETE_ERROR_WHILE_DELETING_FILE = 1
+RNBW_FILE_DELETE_FILE_NOT_FOUND = 2
+RNBW_FILE_DELETE_INVALID_PATH_OR_FILE = 3
+
+; FILE_DOWNLOAD return values
+RNBW_FILE_DOWNLOAD_SUCCESS = 0
+RNBW_FILE_DOWNLOAD_ERROR_WHILE_DELETING_FILE = 1
+RNBW_FILE_DOWNLOAD_DOWNLOAD_FAILED = 2
+RNBW_FILE_DOWNLOAD_INVALID_PATH_OR_FILE = 3
 
 ; Rainbow registers
 RNBW_DATA = $5000

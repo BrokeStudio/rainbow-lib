@@ -1042,11 +1042,11 @@ This command deletes (if exists) the file corresponding of the passed index.
 
 **Returns:**
 
-| Byte | Description                                 | Example           |
-| ---- | ------------------------------------------- | ----------------- |
-| 0    | Length of the message (excluding this byte) | `2`               |
-| 1    | Command ID (see commands from ESP)          | `FILE_DELETE`     |
-| 2    | Result code                                 | `0` or `1` or `2` |
+| Byte | Description                                 | Example       |
+| ---- | ------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte) | `2`           |
+| 1    | Command ID (see commands from ESP)          | `FILE_DELETE` |
+| 2    | Result code (see below)                     | `0`           |
 
 **Result codes:**
 
@@ -1055,6 +1055,7 @@ This command deletes (if exists) the file corresponding of the passed index.
 | 0     | File successfully deleted             |
 | 1     | Error while trying to delete the file |
 | 2     | File does not exist                   |
+| 3     | Invalid path and/or file              |
 
 [Back to command list](#Commands-overview)
 
@@ -1279,6 +1280,7 @@ This command returns file info (size in bytes and crc32).
 ### FILE_DOWNLOAD
 
 This command downloads a file from a specific URL to a specific path index / file index.  
+If the destination file exists, it'll be deleted.  
 The URL must use HTTP or HTTPS protocol.  
 
 | Byte | Description                                 | Example                          |
@@ -1325,7 +1327,16 @@ The URL must use HTTP or HTTPS protocol.
 | ---- | ------------------------------------------- | --------------- |
 | 0    | Length of the message (excluding this byte) | `2`             |
 | 1    | Command ID (see commands from ESP)          | `FILE_DOWNLOAD` |
-| 2    | Download result, 0 (failed) or 1 (success)  | `1`             |
+| 2    | Result code (see below)                     | `0`             |
+
+**Result codes:**
+
+| Value | Description                        |
+| ----- | ---------------------------------- |
+| 0     | Success                            |
+| 1     | Error while deleting existing file |
+| 2     | Download failed                    |
+| 3     | Invalid path and/or file           |
 
 [Back to command list](#Commands-overview)
 

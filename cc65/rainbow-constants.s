@@ -53,7 +53,7 @@
   FILE_GET_LIST                   ; Get list of existing files in a path
   FILE_GET_FREE_ID                ; Get an unexisting file ID in a specific path
   FILE_GET_INFO                   ; Get file info (size + crc32)
-  FILE_DOWNLOAD                   ; Download a file from a giving URL to a specific path index / file index
+  FILE_DOWNLOAD                   ; Download a file
 
 .endenum
 
@@ -83,13 +83,13 @@
 
 ; FILE CMDS
   FILE_EXISTS                     ; Returns if file exists or not
-  FILE_DELETE                     ; Returns when trying to delete a file
+  FILE_DELETE                     ; See FILE_DELETE_RES enum for details on returned value
   FILE_LIST                       ; Returns path file list (FILE_GET_LIST)
   FILE_DATA                       ; Returns file data (FILE_READ)
   FILE_COUNT                      ; Returns file count in a specific path
   FILE_ID                         ; Returns a free file ID (FILE_GET_FREE_ID)
   FILE_INFO                       ; Returns file info (size + CRC32) (FILE_GET_INFO)
-  FILE_DOWNLOAD                   ; Returns 0 or 1 depending on if the file has been successfully download or not
+  FILE_DOWNLOAD                   ; See FILE_DOWNLOAD_RES enum for details on returned value
 
 .endenum
 
@@ -138,6 +138,22 @@ NUM_FILES = 64
   WPA2_PSK = 4
   OPEN_NETWORK = 7
   WPA_WPA2_PSK = 8
+.endenum
+
+; FILE_DELETE return values
+.enum FILE_DELETE_RES
+  SUCCESS
+  ERROR_WHILE_DELETING_FILE
+  FILE_NOT_FOUND
+  INVALID_PATH_OR_FILE
+.endenum
+
+; FILE_DOWNLOAD return values
+.enum FILE_DOWNLOAD_RES
+  SUCCESS
+  ERROR_WHILE_DELETING_FILE
+  DOWNLOAD_FAILED
+  INVALID_PATH_OR_FILE
 .endenum
 
 ; Rainbow registers
