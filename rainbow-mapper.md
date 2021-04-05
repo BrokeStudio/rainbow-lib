@@ -116,7 +116,9 @@ Note: when using 1K chr banking mode with 512K CHR-ROM,
       if needed using register $2000
 ```
 
-### PRG banking (\$5002-\$5004)
+### PRG banking (\$5002-\$5004) Write-only
+
+This register is only writable.  
 
 ```
 7  bit  0
@@ -164,7 +166,9 @@ Register \$5004:
 - when chip selector is 0, \$C000-\$DFFF is mapped to PRG-ROM and 'BBBBbb' is used to select the 8K bank
 - when chip selector is 1, \$C000-\$DFFF is mapped to WRAM and 'bb' is used to select the 8K bank
 
-### WRAM banking (\$5005)
+### WRAM banking (\$5005) Write-only
+
+This register is only writable.  
 
 ```
 7  bit  0
@@ -180,7 +184,9 @@ Register \$5005:
 - when chip selector is 0, \$6000-\$7FFF is mapped to PRG-ROM and 'BBBBbb' is used to select the 8K bank
 - when chip selector is 1, \$6000-\$7FFF is mapped to WRAM and 'bb' is used to select the 8K bank
 
-### CHR banking (\$5400-\$5407)
+### CHR banking (\$5400-\$5407) Write-only
+
+This register is only writable.  
 
 ```
 7  bit  0
@@ -214,7 +220,10 @@ Register \$5400 selects 8K bank.
 Scanline IRQ works exactly like MMC3 IRQ (new/normal behaviour).  
 For more informations: https://wiki.nesdev.com/w/index.php/MMC3#IRQ_Specifics.  
 
-#### IRQ latch (\$5C04)
+#### IRQ latch (\$5C04) Write-only
+
+This register specifies the IRQ counter reload value. When the IRQ counter is zero (or a reload is requested through $C001), this value will be copied to the IRQ counter at the NEXT rising edge of the PPU address, presumably at PPU cycle 260 of the current scanline.  
+This register is only writable.  
 
 ```
 7  bit  0
@@ -224,29 +233,21 @@ DDDD DDDD
 ++++-++++- IRQ latch value
 ```
 
-This register specifies the IRQ counter reload value. When the IRQ counter is zero (or a reload is requested through $C001), this value will be copied to the IRQ counter at the NEXT rising edge of the PPU address, presumably at PPU cycle 260 of the current scanline.  
-
-#### IRQ reload (\$5C05)
-
-```
-7  bit  0
----- ----
-xxxx xxxx
-```
+#### IRQ reload (\$5C05) Write-only
 
 Writing any value to this register reloads the MMC3 IRQ counter at the NEXT rising edge of the PPU address, presumably at PPU cycle 260 of the current scanline.  
-
-#### IRQ disable (\$5C06)
+This register is only writable.  
 
 ```
 7  bit  0
 ---- ----
 xxxx xxxx
 ```
+
+#### IRQ disable (\$5C06) Write-only
 
 Writing any value to this register will disable MMC3 interrupts AND acknowledge any pending interrupts.  
-
-#### IRQ enable (\$5C07)
+This register is only writable.  
 
 ```
 7  bit  0
@@ -254,17 +255,27 @@ Writing any value to this register will disable MMC3 interrupts AND acknowledge 
 xxxx xxxx
 ```
 
+#### IRQ enable (\$5C07) Write-only
+
 Writing any value to this register will enable MMC3 interrupts.  
+This register is only writable.  
+
+```
+7  bit  0
+---- ----
+xxxx xxxx
+```
 
 ### Sound / Audio Expansion (\$5800-\$5805 and \$5C00-\$5C02)
 
 Channels registers work exactly like VRC6 audio expansion minus the frequency scaling register.  
 For more informations: https://wiki.nesdev.com/w/index.php/VRC6_audio.  
 
-#### Pulse control (\$5800,\$5803)
+#### Pulse control (\$5800,\$5803) Write-only
 
 \$5800 controls Pulse 1  
 \$5803 controls Pulse 2  
+Those registers are only writable.  
 
 ```
 7  bit  0
@@ -276,7 +287,9 @@ MDDD VVVV
 +--------- mode (1: ignore duty)
 ```
 
-#### Saw Accum Rate (\$5C00)
+#### Saw Accum Rate (\$5C00) Write-only
+
+This register is only writable.  
 
 ```
 7  bit  0
@@ -285,11 +298,12 @@ MDDD VVVV
   ++-++++- accumulator Rate (controls volume)
 ```
 
-#### Freq Low (\$5801,\$5804,\$5C01)
+#### Freq Low (\$5801,\$5804,\$5C01) Write-only
 
 \$5801 controls Pulse 1  
 \$5804 controls Pulse 2  
 \$5C01 controls Saw  
+Those registers are only writable.  
 
 ```
 7  bit  0
@@ -299,11 +313,12 @@ FFFF FFFF
 ++++-++++- low 8 bits of frequency
 ```
 
-#### Freq High (\$5802,\$5805,\$5C02)
+#### Freq High (\$5802,\$5805,\$5C02) Write-only
 
 \$5802 controls Pulse 1  
 \$5805 controls Pulse 2  
 \$5C02 controls Saw  
+Those registers are only writable.  
 
 ```
 7  bit  0
@@ -319,6 +334,7 @@ E... FFFF
 #### Data transfer (\$5000) R/W
 
 Read or write a byte to communicate with the ESP.  
+This register is readable and writable.  
 
 ```
 7  bit  0
@@ -329,6 +345,8 @@ DDDD DDDD
 ```
 
 #### Configuration (\$5001) R/W
+
+This register is readable and writable.  
 
 ```
 7  bit  0
@@ -342,9 +360,10 @@ di.. ...e
             if both 'd' and 'i' flags are set, then NES IRQ will be triggered
 ```
 
-### Mapper version (\$5C03)
+### Mapper version (\$5C03) Read-only
 
 Read this register to get mapper version.  
+This register is only readable.  
 
 ```
 7  bit  0
