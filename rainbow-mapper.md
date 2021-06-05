@@ -184,9 +184,11 @@ Register \$5005:
 - when chip selector is 0, \$6000-\$7FFF is mapped to PRG-ROM and 'BBBBbb' is used to select the 8K bank
 - when chip selector is 1, \$6000-\$7FFF is mapped to WRAM and 'bb' is used to select the 8K bank
 
-### CHR banking (\$5400-\$5407) Write-only
+### CHR banking (\$5007,\$5400-\$5407) Write-only
 
-This register is only writable.  
+Those registers are only writable.  
+
+\$5400-\$5407 registers work as follow:
 
 ```
 7  bit  0
@@ -198,10 +200,24 @@ BBBB BBBB
 
 #### CHR mode 0 (1K banking)
 
+Register \$5007 controls the upper CHR bank bit.   
+
+```
+7  bit  0
+---- ----
+.... ...p
+        |
+        +-  256K page index
+```
+
+This allows you to address 512 banks in total.  
+To access all 512K in CHR mode 0, first write the upper bank bit to register \$5007 and then write the lower bits to \$5400-\$5407.  
+Each individual 1K bank can have a different upper CHR bank bit.  
+This bit will not be modified when using other CHR modes.  
+
 Registers \$5400 to \$5407 select 1K banks.  
 
-When using 1K chr banking mode with 512K CHR-ROM, banks 0 to 3 address the first 256K and banks 4 to 7 address the last 256K, providing 256K for background and 256K for sprites.  
-The drawback is that you can't use background tiles as sprites without duplicating them however, you can switch background and sprite page if needed using register $2000.  
+*note*: for some reason, you need to add a `nop` after writing to \$5007. This may change in the future.  
 
 #### CHR mode 1 (2K banking)
 
@@ -387,6 +403,5 @@ PPPv vvvv
 
 ## Unused registers
 
-\$5007  
 \$5806  
 \$5807  
