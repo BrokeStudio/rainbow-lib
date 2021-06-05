@@ -41,6 +41,7 @@ Thanks to :
     - [BUFFER_CLEAR_RX_TX](#buffer_clear_rx_tx)
     - [BUFFER_DROP_FROM_ESP](#buffer_drop_from_esp)
     - [WIFI_GET_STATUS](#wifi_get_status)
+    - [ESP_RESTART](#esp_restart)
     - [RND_GET_BYTE](#rnd_get_byte)
     - [RND_GET_BYTE_RANGE](#rnd_get_byte_range)
     - [RND_GET_WORD](#rnd_get_word)
@@ -435,6 +436,19 @@ This command asks the WiFi status.
 | 4     | CONNECT_FAILED  | WiFi connection failed |
 | 5     | CONNECTION_LOST | WiFi connection lost   |
 | 6     | DISCONNECTED    | WiFi disconnected      |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### ESP_RESTART
+
+This command resets the ESP.  
+
+| Byte | Description                                 | Example                |
+| ---- | ------------------------------------------- | ---------------------- |
+| 0    | Length of the message (excluding this byte) | `1`                    |
+| 1    | Command ID (see commands to ESP)            | `ESP_RESTART` |
 
 [Back to command list](#Commands-overview)
 
