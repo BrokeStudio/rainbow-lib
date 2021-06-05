@@ -75,6 +75,7 @@ Thanks to :
     - [FILE_GET_FREE_ID](#file_get_free_id)
     - [FILE_GET_INFO](#file_get_info)
     - [FILE_DOWNLOAD](#file_download)
+    - [FILE_FORMAT](#file_format)
   - [Bootloader](#bootloader)
   - [TODO](#todo)
 
@@ -252,6 +253,7 @@ A message always have the same format and follows these rules:
 | 38    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)                             | Get an unexisting file ID in a specific path.                             |
 | 39    | [FILE_GET_INFO](#FILE_GET_INFO)                                   | Get file info (size + crc32)                                              |
 | 40    | [FILE_DOWNLOAD](#FILE_DOWNLOAD)                                   | Download a file from a giving URL to a specific path index / file index   |
+| 41    | [FILE_FORMAT](#FILE_FORMAT)                                       | Format file system                                                        |
 
 ### Commands from the ESP
 
@@ -1351,6 +1353,20 @@ The URL must use HTTP or HTTPS protocol.
 | 1     | Error while deleting existing file |
 | 2     | Download failed                    |
 | 3     | Invalid path and/or file           |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### FILE_FORMAT
+
+This command formats the file system.  
+Current configuration will be saved afterwards.  
+
+| Byte | Description                                 | Example       |
+| ---- | ------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte) | `1`           |
+| 1    | Command ID (see commands to ESP)            | `FILE_FORMAT` |
 
 [Back to command list](#Commands-overview)
 

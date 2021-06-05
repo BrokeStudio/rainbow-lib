@@ -54,6 +54,7 @@
   FILE_GET_FREE_ID                ; Get an unexisting file ID in a specific path
   FILE_GET_INFO                   ; Get file info (size + crc32)
   FILE_DOWNLOAD                   ; Download a file
+  FILE_FORMAT                     ; Format file system and save current config
 
 .endenum
 

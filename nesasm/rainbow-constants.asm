@@ -53,6 +53,7 @@ TOESP_FILE_GET_LIST                   = 37  ; Get list of existing files in a pa
 TOESP_FILE_GET_FREE_ID                = 38  ; Get an unexisting file ID in a specific path
 TOESP_FILE_GET_INFO                   = 39  ; Get file info (size + crc32)
 TOESP_FILE_DOWNLOAD                   = 40  ; Download a file
+TOESP_FILE_FORMAT                     = 41  ; Format file system and save current config
 
 ; commands from ESP
 
