@@ -7,7 +7,7 @@
 
 ## Credits
 
-The Rainbow project is developed by Antoine Gohin / Broke Studio.  
+The Rainbow project is developed by [Antoine Gohin / Broke Studio](https://twitter.com/Broke_Studio).  
 
 Thanks to :
 
@@ -127,7 +127,7 @@ Read register $5000 to get next byte from the ESP.
   bne :-            ; loop if not equal
 ```
 
-**Note:** Because of the mapper buffer, the first read of a new message will always return the last read of the previous message. So a dummy read is required in this case. (*this is subject to change*)
+**Note:** because of the mapper buffer, the first read of a new message will always return a dummy byte, so a dummy read is required in this case.  
 
 Write to register $5000 to send byte to the ESP.  
 
@@ -165,7 +165,7 @@ Write to register $5000 to send byte to the ESP.
   sty $5000
 ```
 
-**Note:** After you send the first byte of a new message, you have one second to send the rest of the message before the RX buffer is reset. This is to prevent the ESP to be stuck, waiting for a message that could never come. (*this is subject to change*)
+**Note:** after you send the first byte of a new message, you have one second to send the rest of the message before the RX buffer is reset. This is to prevent the ESP to get stuck, waiting for a message that could never come.  
 
 ### Status (\$5001 - R/W)
 
@@ -188,8 +188,8 @@ Therefore, it's recommended to process the data immediately after receiving it i
 
 The ESP has 2 FIFO buffers :  
 
-- **TX**: data from the ESP to the NES buffer  
-- **RX**: data from the NES to the ESP buffer  
+- **TX:** data from the ESP to the NES buffer  
+- **RX:** data from the NES to the ESP buffer  
 
 Both buffers can store up to 20 messages.
 
@@ -198,7 +198,7 @@ Both buffers can store up to 20 messages.
 A message always have the same format and follows these rules:  
 
 - First byte is the message length (number of bytes following this first byte, can't be 0, minimum is 1).
-- Second byte is the command (see NES to ESP commands).
+- Second byte is the command (see [Commands to the ESP](#Commands-to-the-ESP)).
 - Following bytes are the parameters/data for the command.
 
 ## Commands overview
@@ -347,14 +347,16 @@ This command sets the debug level.
 ```
 7  bit  0
 ---- ----
-.... ..sl
-       ||
-       |+-  enable/disable log output 
-       +--  enable/disable serial output log
-            outputs what was sent to the NES
-            NOTE: this is not recommended when lots of messages
-                  are exchanged (ex: during real-time game),
-                  the ESP can't keep up
+.... .nsd
+      |||
+      ||+-  enable/disable dev logs
+      |+--  enable/disable serial logs
+      |     outputs what is sent to the NES
+      +---  enable/disable network logs
+            outputs what is received from the outside world (WebSocket/TCP/UDP)
+
+Note: serial/network logs are not recommended when lots of messages are exchanged (ex: during real-time game)
+
 ```
 
 [Back to command list](#Commands-overview)
@@ -382,7 +384,11 @@ Bit 1 of the debug level needs to be set (see [DEBUG_SET_LEVEL](#DEBUG_SET_LEVEL
 ### BUFFER_CLEAR_RX_TX
 
 This command clears TX/RX buffers.  
-Can be use on startup to make sure that we start with a clean setup.
+Should be used on startup to make sure that we start with a clean setup.  
+
+**Important** do NOT send another message right after sending a BUFFER_CLEAR_RX_TX command. The new message would arrive before the buffers are cleared and would then be lost. However, you can send ESP_GET_STATUS until you get a response, and then read $5000 until $5001.7 is 0.
+
+**Note:** sending a BUFFER_CLEAR_RX_TX at the ROM startup is HIGLY recommended to avoid undefined behaviour if resetting the console in the middle of communication between the NES and the ESP.  
 
 | Byte | Description                                 | Example              |
 | ---- | ------------------------------------------- | -------------------- |
@@ -447,9 +453,9 @@ This command asks the WiFi status.
 
 This command resets the ESP.  
 
-| Byte | Description                                 | Example                |
-| ---- | ------------------------------------------- | ---------------------- |
-| 0    | Length of the message (excluding this byte) | `1`                    |
+| Byte | Description                                 | Example       |
+| ---- | ------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte) | `1`           |
 | 1    | Command ID (see commands to ESP)            | `ESP_RESTART` |
 
 [Back to command list](#Commands-overview)
@@ -1099,7 +1105,7 @@ If the file is smaller than the passed offset, it'll be filled with 0x00.
 
 This command reads and sends data from the working file.  
 You have to pass the number of bytes you want to read.  
-If there is working file currently open, number of bytes will be 0.
+If there is no working file currently open, number of bytes will be 0.
 
 | Byte | Description                                 | Example          |
 | ---- | ------------------------------------------- | ---------------- |
@@ -1118,7 +1124,7 @@ If there is working file currently open, number of bytes will be 0.
 | 4    | Data                                        | `0xDA`                                    |
 | 5    | Data                                        | `0x4C`                                    |
 
-**Note:** Number of bytes returned can be less than the number of bytes requested depending on the file size and the file cursor position.  
+**Note:** number of bytes returned can be less than the number of bytes requested depending on the file size and the file cursor position.  
 
 [Back to command list](#Commands-overview)
 

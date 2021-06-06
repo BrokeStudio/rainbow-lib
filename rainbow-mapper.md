@@ -1,10 +1,8 @@
-# Rainbow mapper documentation (draft)
+# Rainbow mapper documentation
 
-Rainbow or RNBW is a cartridge board intended for homebrew releases with its own unique mapper assigned to iNES Mapper xxx.  
+Rainbow or RNBW is a cartridge board intended for homebrew releases with its own unique mapper assigned to iNES Mapper xxx (TBD).  
 The cartridge was initially designed with WiFi capabilities in mind, but can also be used without it.  
 The board and mapper were designed by Broke Studio which also manufactures the cartridges.  
-
-**This is a first draft of the mapper specifications.**  
 
 ## Overview
 
@@ -200,7 +198,7 @@ BBBB BBBB
 
 #### CHR mode 0 (1K banking)
 
-Register \$5007 controls the upper CHR bank bit.   
+Register \$5007 controls the upper CHR bank bit.  
 
 ```
 7  bit  0
@@ -405,3 +403,82 @@ PPPv vvvv
 
 \$5806  
 \$5807  
+
+## Recap / Cheat sheet
+
+### ESP/WiFi
+
+- \$5000  (R/W) data transfer  
+- \$5001  (R/W) configuration  
+
+### PRG-ROM banking
+
+**Note:** \$E000-\$FFFF is fixed to last 8K bank  
+
+- \$5002  (W)
+  - 16K @ \$8000-\$BFFF (mode 0)  
+  - 8K @ \$C000-\$DFFF (mode 1)  
+- \$5003  (W)
+  - 8K @ \$A000-\$BFFF(mode 1)  
+- \$5004  (W)
+  - 8K @ \$C000-\$DFFF(mode 0/1)  
+
+### PRG-RAM banking
+
+- \$5005  (W)  8K @\$6000-\$7FFF  
+
+### Mapper configuration
+
+- \$5006  (W/R) %ssmm rccp  
+  - ss - 1-screen selector  
+  - mm - mirroring mode  
+  - r - CHR chip selector for pattern tables  
+  - cc - CHR banking mode  
+  - p - PRG banking mode  
+
+### CHR-ROM/RAM banking
+
+- \$5007  (W)
+  - 1K upper CHR bank bit (mode 0)
+- \$5400  (W)
+  - 1K @ \$0000-\$03FF (mode 0)  
+  - 2k @ \$0000-\$07FF (mode 1)  
+  - 4k @ \$0000-\$0FFF (mode 2)  
+  - 8k @ \$0000-\$07FF (mode 3)  
+- \$5401  (W)
+  - 1K @ \$0400-\$07FF (mode 0)  
+  - 2k @ \$0800-\$0FFF (mode 1)  
+  - 4k @ \$1000-\$1FFF (mode 2)  
+- \$5402  (W)
+  - 1K @ \$0800-\$0BFF (mode 0)  
+  - 2k @ \$1000-\$17FF (mode 1)  
+- \$5403  (W)
+  - 1K @ \$0C00-\$0FFF (mode 0)  
+  - 2k @ \$1800-\$1FFF (mode 1)  
+- \$5404  (W)
+  - 1K @ \$1000-\$13FF (mode 0)  
+- \$5405  (W)
+  - 1K @ \$1400-\$17FF (mode 0)  
+- \$5406  (W)
+  - 1K @ \$1800-\$1BFF (mode 0)  
+- \$5407  (W)
+  - 1K @ \$1C00-\$1FFF (mode 0)  
+
+### Scanline IRQ
+
+\$5C04  (W) latch  
+\$5C05  (W) reload  
+\$5C06  (W) disable  
+\$5C07  (W) enable  
+
+### Audio expansion
+
+\$5800  (W) pusle 1 control  
+\$5801  (W) pulse 1 low freq  
+\$5802  (W) pulse 1 high freq  
+\$5803  (W) pusle 2 control  
+\$5804  (W) pulse 2 low freq  
+\$5805  (W) pulse 2 high freq  
+\$5C00  (W) saw accumulator rate  
+\$5C01  (W) saw low freq  
+\$5C02  (W) saw high freq  

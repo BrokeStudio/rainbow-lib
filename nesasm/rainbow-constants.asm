@@ -9,7 +9,7 @@ TOESP_DEBUG_GET_LEVEL                 = 1   ; Get debug level
 TOESP_DEBUG_SET_LEVEL                 = 2   ; Set debug level
 TOESP_DEBUG_LOG                       = 3   ; Debug / Log data
 TOESP_CLEAR_BUFFERS                   = 4   ; Clear RX/TX buffers
-TOESP_FROMESP_BUFFER_DROP_FROM_ESP    = 5   ; Drop messages from TX (ESP->outside world) buffer
+TOESP_FROMESP_BUFFER_DROP_FROM_ESP    = 5   ; Drop messages from ESP buffer (TX)
 TOESP_GET_WIFI_STATUS                 = 6   ; Get WiFi connection status
 TOESP_ESP_RESTART                     = 7   ; Restart ESP
 
@@ -22,7 +22,7 @@ TOESP_RND_GET_WORD_RANGE              = 11  ; Get random word between custom min
 ; SERVER CMDS
 TOESP_SERVER_GET_STATUS               = 12  ; Get server connection status
 TOESP_SERVER_PING                     = 13  ; Get ping between ESP and server
-TOESP_SERVER_SET_PROTOCOL             = 14  ; Set protocol to be used to communicate (WS/UDP)
+TOESP_SERVER_SET_PROTOCOL             = 14  ; Set protocol to be used to communicate (WS/UDP/TCP)
 TOESP_SERVER_GET_SETTINGS             = 15  ; Get current server host name and port
 TOESP_SERVER_GET_CONFIG_SETTINGS      = 16  ; Get server host name and port defined in the Rainbow config file
 TOESP_SERVER_SET_SETTINGS             = 17  ; Set current server host name and port

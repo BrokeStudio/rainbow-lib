@@ -10,7 +10,7 @@
   DEBUG_SET_LEVEL                 ; Set debug level
   DEBUG_LOG                       ; Debug / Log data
   BUFFER_CLEAR_RX_TX              ; Clear RX/TX buffers
-  BUFFER_DROP_FROM_ESP            ; Drop messages from TX (ESP->outside world) buffer
+  BUFFER_DROP_FROM_ESP            ; Drop messages from ESP buffer (TX)
   WIFI_GET_STATUS                 ; Get WiFi connection status
   ESP_RESTART                     ; Restart ESP
 
@@ -23,7 +23,7 @@
 ; SERVER CMDS
   SERVER_GET_STATUS               ; Get server connection status
   SERVER_PING                     ; Get ping between ESP and server
-  SERVER_SET_PROTOCOL             ; Set protocol to be used to communicate (WS/UDP)
+  SERVER_SET_PROTOCOL             ; Set protocol to be used to communicate (WS/UDP/TCP)
   SERVER_GET_SETTINGS             ; Get current server host name and port
   SERVER_GET_CONFIG_SETTINGS      ; Get server host name and port defined in the Rainbow config file
   SERVER_SET_SETTINGS             ; Set current server host name and port
