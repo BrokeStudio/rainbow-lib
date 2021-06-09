@@ -64,6 +64,7 @@ Thanks to :
     - [NETWORK_UNREGISTER](#network_unregister)
     - [FILE_OPEN](#file_open)
     - [FILE_CLOSE](#file_close)
+    - [FILE_STATUS](#file_status)
     - [FILE_EXISTS](#file_exists)
     - [FILE_DELETE](#file_delete)
     - [FILE_SET_CUR](#file_set_cur)
@@ -242,18 +243,19 @@ A message always have the same format and follows these rules:
 |       |                                                                   | **FILE CMDS**                                                             |
 | 28    | [FILE_OPEN](#FILE_OPEN)                                           | Open working file                                                         |
 | 29    | [FILE_CLOSE](#FILE_CLOSE)                                         | Close working file                                                        |
-| 30    | [FILE_EXISTS](#FILE_EXISTS)                                       | Check if file exists                                                      |
-| 31    | [FILE_DELETE](#FILE_DELETE)                                       | Delete a file                                                             |
-| 32    | [FILE_SET_CUR](#FILE_SET_CUR)                                     | Set working file cursor position a file                                   |
-| 33    | [FILE_READ](#FILE_READ)                                           | Read working file (at specific position)                                  |
-| 34    | [FILE_WRITE](#FILE_WRITE)                                         | Write working file (at specific position)                                 |
-| 35    | [FILE_APPEND](#FILE_APPEND)                                       | Append data to working file                                               |
-| 36    | [FILE_COUNT](#FILE_COUNT)                                         | Get number of tiles in a specific path                                    |
-| 37    | [FILE_GET_LIST](#FILE_GET_LIST)                                   | Get list of existing files in a specific path                             |
-| 38    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)                             | Get an unexisting file ID in a specific path.                             |
-| 39    | [FILE_GET_INFO](#FILE_GET_INFO)                                   | Get file info (size + crc32)                                              |
-| 40    | [FILE_DOWNLOAD](#FILE_DOWNLOAD)                                   | Download a file from a giving URL to a specific path index / file index   |
-| 41    | [FILE_FORMAT](#FILE_FORMAT)                                       | Format file system                                                        |
+| 30    | [FILE_STATUS](#FILE_STATUS)                                       | Get working file status                                                   |
+| 31    | [FILE_EXISTS](#FILE_EXISTS)                                       | Check if file exists                                                      |
+| 32    | [FILE_DELETE](#FILE_DELETE)                                       | Delete a file                                                             |
+| 33    | [FILE_SET_CUR](#FILE_SET_CUR)                                     | Set working file cursor position a file                                   |
+| 34    | [FILE_READ](#FILE_READ)                                           | Read working file (at specific position)                                  |
+| 35    | [FILE_WRITE](#FILE_WRITE)                                         | Write working file (at specific position)                                 |
+| 36    | [FILE_APPEND](#FILE_APPEND)                                       | Append data to working file                                               |
+| 37    | [FILE_COUNT](#FILE_COUNT)                                         | Get number of tiles in a specific path                                    |
+| 38    | [FILE_GET_LIST](#FILE_GET_LIST)                                   | Get list of existing files in a specific path                             |
+| 39    | [FILE_GET_FREE_ID](#FILE_GET_FREE_ID)                             | Get an unexisting file ID in a specific path.                             |
+| 40    | [FILE_GET_INFO](#FILE_GET_INFO)                                   | Get file info (size + crc32)                                              |
+| 41    | [FILE_DOWNLOAD](#FILE_DOWNLOAD)                                   | Download a file from a giving URL to a specific path index / file index   |
+| 42    | [FILE_FORMAT](#FILE_FORMAT)                                       | Format file system                                                        |
 
 ### Commands from the ESP
 
@@ -277,14 +279,15 @@ A message always have the same format and follows these rules:
 | 11    | [NETWORK_REGISTERED_DETAILS](#NETWORK_GET_REGISTERED_DETAILS) |                  |
 | 12    | [NETWORK_REGISTERED](#NETWORK_GET_REGISTERED)                 |                  |
 |       |                                                               | **FILE CMDS**    |
-| 13    | [FILE_EXISTS](#FILE_EXISTS)                                   |                  |
-| 14    | [FILE_DELETE](#FILE_DELETE)                                   |                  |
-| 15    | [FILE_LIST](#FILE_GET_LIST)                                   |                  |
-| 16    | [FILE_DATA](#FILE_READ)                                       |                  |
-| 17    | [FILE_COUNT](#FILE_COUNT)                                     |                  |
-| 18    | [FILE_ID](#FILE_GET_FREE_ID)                                  |                  |
-| 19    | [FILE_INFO](#FILE_GET_INFO)                                   |                  |
-| 20    | [FILE_DOWNLOAD](#FILE_DOWNLOAD)                               |                  |
+| 13    | [FILE_STATUS](#FILE_STATUS)                                   |                  |
+| 14    | [FILE_EXISTS](#FILE_EXISTS)                                   |                  |
+| 15    | [FILE_DELETE](#FILE_DELETE)                                   |                  |
+| 16    | [FILE_LIST](#FILE_GET_LIST)                                   |                  |
+| 17    | [FILE_DATA](#FILE_READ)                                       |                  |
+| 18    | [FILE_COUNT](#FILE_COUNT)                                     |                  |
+| 19    | [FILE_ID](#FILE_GET_FREE_ID)                                  |                  |
+| 20    | [FILE_INFO](#FILE_GET_INFO)                                   |                  |
+| 21    | [FILE_DOWNLOAD](#FILE_DOWNLOAD)                               |                  |
 
 ## Commands details
 
@@ -1006,6 +1009,30 @@ This command closes the working file.
 | ---- | ------------------------------------------- | ------------ |
 | 0    | Length of the message (excluding this byte) | `1`          |
 | 1    | Command ID (see commands to ESP)            | `FILE_CLOSE` |
+
+[Back to command list](#Commands-overview)
+
+---
+
+### FILE_STATUS
+
+This command returns the working file status.  
+
+| Byte | Description                                 | Example       |
+| ---- | ------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte) | `1`           |
+| 1    | Command ID (see commands to ESP)            | `FILE_STATUS` |
+
+**Returns:**
+
+| Byte | Description                                                | Example            |
+| ---- | ---------------------------------------------------------- | ------------------ |
+| 0    | Length of the message (excluding this byte)                | `2` or `4`         |
+| 1    | Command ID (see commands from ESP)                         | `FILE_STATUS`      |
+| 2    | Returns 1 if a file is currently opened, 0 otherwise       | `0` or `1`         |
+|      | *the next bytes are send only if a file is currently open* |                    |
+| 3    | File path (see FILE_PATHS)                                 | `FILE_PATHS::SAVE` |
+| 4    | File index                                                 | `5 (0 to 63)`      |
 
 [Back to command list](#Commands-overview)
 

@@ -42,18 +42,19 @@ TOESP_NETWORK_UNREGISTER              = 27  ; Unregister network
 ; FILE COMMANDS
 TOESP_FILE_OPEN                       = 28  ; Open working file
 TOESP_FILE_CLOSE                      = 29  ; Close working file
-TOESP_FILE_EXISTS                     = 30  ; Check if file exists
-TOESP_FILE_DELETE                     = 31  ; Delete a file
-TOESP_FILE_SET_CUR                    = 32  ; Set working file cursor position a file
-TOESP_FILE_READ                       = 33  ; Read working file (at specific position)
-TOESP_FILE_WRITE                      = 34  ; Write working file (at specific position)
-TOESP_FILE_APPEND                     = 35  ; Append data to working file
-TOESP_FILE_COUNT                      = 36  ; Count files in a specific path
-TOESP_FILE_GET_LIST                   = 37  ; Get list of existing files in a path
-TOESP_FILE_GET_FREE_ID                = 38  ; Get an unexisting file ID in a specific path
-TOESP_FILE_GET_INFO                   = 39  ; Get file info (size + crc32)
-TOESP_FILE_DOWNLOAD                   = 40  ; Download a file
-TOESP_FILE_FORMAT                     = 41  ; Format file system and save current config
+TOESP_FILE_STATUS                     = 30  ; Get working file status
+TOESP_FILE_EXISTS                     = 31  ; Check if file exists
+TOESP_FILE_DELETE                     = 32  ; Delete a file
+TOESP_FILE_SET_CUR                    = 33  ; Set working file cursor position a file
+TOESP_FILE_READ                       = 34  ; Read working file (at specific position)
+TOESP_FILE_WRITE                      = 35  ; Write working file (at specific position)
+TOESP_FILE_APPEND                     = 36  ; Append data to working file
+TOESP_FILE_COUNT                      = 37  ; Count files in a specific path
+TOESP_FILE_GET_LIST                   = 38  ; Get list of existing files in a path
+TOESP_FILE_GET_FREE_ID                = 39  ; Get an unexisting file ID in a specific path
+TOESP_FILE_GET_INFO                   = 40  ; Get file info (size + crc32)
+TOESP_FILE_DOWNLOAD                   = 41  ; Download a file
+TOESP_FILE_FORMAT                     = 42  ; Format file system and save current config
 
 ; commands from ESP
 
@@ -79,14 +80,15 @@ FROMESP_NETWORK_REGISTERED_DETAILS    = 11  ; Returns SSID for a registered netw
 FROMESP_NETWORK_REGISTERED            = 12  ; Returns registered networks status
 
 ; FILE CMDS
-FROMESP_FILE_EXISTS                   = 13  ; Returns if file exists or not
-FROMESP_FILE_DELETE                   = 14  ; See RNBW_FILE_DELETE_xxx constants for details on returned value
-FROMESP_FILE_LIST                     = 15  ; Returns path file list (FILE_GET_LIST)
-FROMESP_FILE_DATA                     = 16  ; Returns file data (FILE_READ)
-FROMESP_FILE_COUNT                    = 17  ; Returns file count in a specific path
-FROMESP_FILE_ID                       = 18  ; Returns a free file ID (FILE_GET_FREE_ID)
-FROMESP_FILE_INFO                     = 19  ; Returns file info (size + CRC32) (FILE_GET_INFO)
-FROMESP_FILE_DOWNLOAD                 = 20  ; See RNBW_FILE_DOWNLOAD_xxx constants for details on returned value
+FROMESP_FILE_STATUS                   = 13  ; Returns working file status
+FROMESP_FILE_EXISTS                   = 14  ; Returns if file exists or not
+FROMESP_FILE_DELETE                   = 15  ; See RNBW_FILE_DELETE_xxx constants for details on returned value
+FROMESP_FILE_LIST                     = 16  ; Returns path file list (FILE_GET_LIST)
+FROMESP_FILE_DATA                     = 17  ; Returns file data (FILE_READ)
+FROMESP_FILE_COUNT                    = 18  ; Returns file count in a specific path
+FROMESP_FILE_ID                       = 19  ; Returns a free file ID (FILE_GET_FREE_ID)
+FROMESP_FILE_INFO                     = 20  ; Returns file info (size + CRC32) (FILE_GET_INFO)
+FROMESP_FILE_DOWNLOAD                 = 21  ; See RNBW_FILE_DOWNLOAD_xxx constants for details on returned value
 
 ; WiFi status
 RNBW_WIFI_NO_SHIELD = 255

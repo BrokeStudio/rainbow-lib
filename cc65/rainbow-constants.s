@@ -43,6 +43,7 @@
 ; FILE COMMANDS
   FILE_OPEN                       ; Open working file
   FILE_CLOSE                      ; Close working file
+  FILE_STATUS                     ; Get working file status
   FILE_EXISTS                     ; Check if file exists
   FILE_DELETE                     ; Delete a file
   FILE_SET_CUR                    ; Set working file cursor position a file
@@ -83,6 +84,7 @@
   NETWORK_REGISTERED              ; Returns registered networks status
 
 ; FILE CMDS
+  FILE_STATUS                     ; Returns working file status
   FILE_EXISTS                     ; Returns if file exists or not
   FILE_DELETE                     ; See FILE_DELETE_RES enum for details on returned value
   FILE_LIST                       ; Returns path file list (FILE_GET_LIST)
