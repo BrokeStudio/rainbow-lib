@@ -62,6 +62,8 @@ Thanks to :
     - [NETWORK_GET_REGISTERED_DETAILS](#network_get_registered_details)
     - [NETWORK_REGISTER](#network_register)
     - [NETWORK_UNREGISTER](#network_unregister)
+  - [File commands details](#file-commands-details)
+    - [File paths](#file-paths)
     - [FILE_OPEN](#file_open)
     - [FILE_CLOSE](#file_close)
     - [FILE_STATUS](#file_status)
@@ -659,28 +661,28 @@ This command returns the current server settings (hostname and port).
 
 **Returns:**
 
-| Byte | Description                                                                                | Example         |
-| ---- | ------------------------------------------------------------------------------------------ | --------------- |
-| 0    | Length of the message (excluding this byte)                                                | `1` or more     |
-| 1    | Command ID (see commands from ESP)                                                         | `HOST_SETTINGS` |
-|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                 |
-| 2    | Port MSB                                                                                   | `0x0B`          |
-| 3    | Port LSB                                                                                   | `0xB8`          |
-| 4    | Hostname string                                                                            | `G`             |
-| 5    | ...                                                                                        | `A`             |
-| 6    | ...                                                                                        | `M`             |
-| 7    | ...                                                                                        | `E`             |
-| 8    | ...                                                                                        | `.`             |
-| 9    | ...                                                                                        | `S`             |
-| 10   | ...                                                                                        | `E`             |
-| 11   | ...                                                                                        | `R`             |
-| 12   | ...                                                                                        | `V`             |
-| 13   | ...                                                                                        | `E`             |
-| 14   | ...                                                                                        | `R`             |
-| 15   | ...                                                                                        | `.`             |
-| 16   | ...                                                                                        | `N`             |
-| 17   | ...                                                                                        | `E`             |
-| 18   | ...                                                                                        | `T`             |
+| Byte | Description                                                                                    | Example         |
+| ---- | ---------------------------------------------------------------------------------------------- | --------------- |
+| 0    | Length of the message (excluding this byte)                                                    | `1` or more     |
+| 1    | Command ID (see commands from ESP)                                                             | `HOST_SETTINGS` |
+|      | **_next bytes are returned if a server hostname AND port are set in the Rainbow config file_** |                 |
+| 2    | Port MSB                                                                                       | `0x0B`          |
+| 3    | Port LSB                                                                                       | `0xB8`          |
+| 4    | Hostname string                                                                                | `G`             |
+| 5    | ...                                                                                            | `A`             |
+| 6    | ...                                                                                            | `M`             |
+| 7    | ...                                                                                            | `E`             |
+| 8    | ...                                                                                            | `.`             |
+| 9    | ...                                                                                            | `S`             |
+| 10   | ...                                                                                            | `E`             |
+| 11   | ...                                                                                            | `R`             |
+| 12   | ...                                                                                            | `V`             |
+| 13   | ...                                                                                            | `E`             |
+| 14   | ...                                                                                            | `R`             |
+| 15   | ...                                                                                            | `.`             |
+| 16   | ...                                                                                            | `N`             |
+| 17   | ...                                                                                            | `E`             |
+| 18   | ...                                                                                            | `T`             |
 
 [Back to command list](#Commands-overview)
 
@@ -697,28 +699,28 @@ This command returns the server settings (hostname and port) from the Rainbow co
 
 **Returns:**
 
-| Byte | Description                                                                                | Example         |
-| ---- | ------------------------------------------------------------------------------------------ | --------------- |
-| 0    | Length of the message (excluding this byte)                                                | `1` or more     |
-| 1    | Command ID (see commands from ESP)                                                         | `HOST_SETTINGS` |
-|      | *next bytes are returned if a server hostname AND port are set in the Rainbow config file* |                 |
-| 2    | Port MSB                                                                                   | `0x0B`          |
-| 3    | Port LSB                                                                                   | `0xB8`          |
-| 4    | Hostname string                                                                            | `G`             |
-| 5    | ...                                                                                        | `A`             |
-| 6    | ...                                                                                        | `M`             |
-| 7    | ...                                                                                        | `E`             |
-| 8    | ...                                                                                        | `.`             |
-| 9    | ...                                                                                        | `S`             |
-| 10   | ...                                                                                        | `E`             |
-| 11   | ...                                                                                        | `R`             |
-| 12   | ...                                                                                        | `V`             |
-| 13   | ...                                                                                        | `E`             |
-| 14   | ...                                                                                        | `R`             |
-| 15   | ...                                                                                        | `.`             |
-| 16   | ...                                                                                        | `N`             |
-| 17   | ...                                                                                        | `E`             |
-| 18   | ...                                                                                        | `T`             |
+| Byte | Description                                                                                    | Example         |
+| ---- | ---------------------------------------------------------------------------------------------- | --------------- |
+| 0    | Length of the message (excluding this byte)                                                    | `1` or more     |
+| 1    | Command ID (see commands from ESP)                                                             | `HOST_SETTINGS` |
+|      | **_next bytes are returned if a server hostname AND port are set in the Rainbow config file_** |                 |
+| 2    | Port MSB                                                                                       | `0x0B`          |
+| 3    | Port LSB                                                                                       | `0xB8`          |
+| 4    | Hostname string                                                                                | `G`             |
+| 5    | ...                                                                                            | `A`             |
+| 6    | ...                                                                                            | `M`             |
+| 7    | ...                                                                                            | `E`             |
+| 8    | ...                                                                                            | `.`             |
+| 9    | ...                                                                                            | `S`             |
+| 10   | ...                                                                                            | `E`             |
+| 11   | ...                                                                                            | `R`             |
+| 12   | ...                                                                                            | `V`             |
+| 13   | ...                                                                                            | `E`             |
+| 14   | ...                                                                                            | `R`             |
+| 15   | ...                                                                                            | `.`             |
+| 16   | ...                                                                                            | `N`             |
+| 17   | ...                                                                                            | `E`             |
+| 18   | ...                                                                                            | `T`             |
 
 [Back to command list](#Commands-overview)
 
@@ -736,15 +738,15 @@ It doesn't overwrite values set in the Rainbow config file.
 | 2    | Port MSB                                    | `0x0B`                           |
 | 3    | Port LSB                                    | `0xB8`                           |
 | 4    | Hostname string                             | `S`                              |
-| 5    | Hostname string                             | `E`                              |
-| 6    | Hostname string                             | `R`                              |
-| 7    | Hostname string                             | `V`                              |
-| 8    | Hostname string                             | `E`                              |
-| 9    | Hostname string                             | `R`                              |
-| 10   | Hostname string                             | `.`                              |
-| 11   | Hostname string                             | `N`                              |
-| 12   | Hostname string                             | `E`                              |
-| 13   | Hostname string                             | `T`                              |
+| 5    | ...                                         | `E`                              |
+| 6    | ...                                         | `R`                              |
+| 7    | ...                                         | `V`                              |
+| 8    | ...                                         | `E`                              |
+| 9    | ...                                         | `R`                              |
+| 10   | ...                                         | `.`                              |
+| 11   | ...                                         | `N`                              |
+| 12   | ...                                         | `E`                              |
+| 13   | ...                                         | `T`                              |
 
 [Back to command list](#Commands-overview)
 
@@ -856,9 +858,9 @@ This command returns the network SSID of a scanned network referenced by the pas
 | 8    | Hidden?                                     | `0` (0: no / 1: yes))                         |
 | 9    | SSID string length                          | `4`                                           |
 | 10   | SSID string                                 | `S`                                           |
-| 11   | SSID string                                 | `S`                                           |
-| 12   | SSID string                                 | `I`                                           |
-| 13   | SSID string                                 | `D`                                           |
+| 11   | ...                                         | `S`                                           |
+| 12   | ...                                         | `I`                                           |
+| 13   | ...                                         | `D`                                           |
 
 **Encryption types:**
 
@@ -917,9 +919,9 @@ This command returns the SSID of the requested configuration network.
 | 1    | Command ID (see commands from ESP)          | `NETWORK_REGISTERED_DETAILS`    |
 | 2    | SSID string length                          | `4`                             |
 | 3    | SSID string                                 | `S`                             |
-| 4    | SSID string                                 | `S`                             |
-| 5    | SSID string                                 | `I`                             |
-| 6    | SSID string                                 | `D`                             |
+| 4    | ...                                         | `S`                             |
+| 5    | ...                                         | `I`                             |
+| 6    | ...                                         | `D`                             |
 
 [Back to command list](#Commands-overview)
 
@@ -937,18 +939,18 @@ This command registers a network in one of the spots.
 | 2    | Network ID                                  | `0`                              |
 | 3    | SSID string length                          | `4`                              |
 | 4    | SSID string                                 | `S`                              |
-| 5    | SSID string                                 | `S`                              |
-| 6    | SSID string                                 | `I`                              |
-| 7    | SSID string                                 | `D`                              |
+| 5    | ...                                         | `S`                              |
+| 6    | ...                                         | `I`                              |
+| 7    | ...                                         | `D`                              |
 | 8    | PASSWORD string length                      | `8`                              |
 | 9    | PASSWORD string                             | `P`                              |
-| 10   | PASSWORD string                             | `A`                              |
-| 11   | PASSWORD string                             | `S`                              |
-| 12   | PASSWORD string                             | `S`                              |
-| 13   | PASSWORD string                             | `W`                              |
-| 14   | PASSWORD string                             | `O`                              |
-| 15   | PASSWORD string                             | `R`                              |
-| 16   | PASSWORD string                             | `D`                              |
+| 10   | ...                                         | `A`                              |
+| 11   | ...                                         | `S`                              |
+| 12   | ...                                         | `S`                              |
+| 13   | ...                                         | `W`                              |
+| 14   | ...                                         | `O`                              |
+| 15   | ...                                         | `R`                              |
+| 16   | ...                                         | `D`                              |
 
 **Notes:**
 - Strings can only use ASCII characters between 0x20 to 0x7E.  
@@ -975,27 +977,68 @@ This command unregister a network from one of the spots.
 
 ---
 
+## File commands details
+
+Files management can be a bit tricky.  
+They can be accessed in **auto mode** or in **manual mode**.  
+- **auto mode** allows you to use predefined folders and files using simple IDs  
+- **manual mode** allows you to use real path and file names  
+
+**Auto mode** is recommended since it makes messages shorter and easier to read, however **manual mode** can be useful in specific situations.  
+
+### File paths
+
+File paths for **auto mode** are defined as follow.  
+
+| Value | FILE_PATHS | Description                                 |
+| ----- | ---------- | ------------------------------------------- |
+| 0     | SAVE       | Can be used to load/save game data          |
+| 1     | ROMS       | Can be used to dump/flash ROMS, patches     |
+| 2     | USER       | Can be used to read/write data for the user |
+
 ### FILE_OPEN
 
-This command opens the working file.  
+This command opens a file as the working file.  
+It can be used in auto mode (using predefined path index and filename index) or in manual mode (using path/filename string).  
 If the file does not exists, an empty one will be created.  
-If the same file is already open, then the file cursor will be reset to 0.  
-If another file is already open, it will be closed.  
+If the same file is already opened, then the file cursor will be reset to 0.  
+If another file is already opened, it will be closed.  
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `3`                |
-| 1    | Command ID (see commands to ESP)            | `FILE_OPEN`        |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
-| 3    | File index                                  | `5 (0 to 63)`      |
+Message first bytes:  
 
-**File paths:**
+| Byte | Description                                     | Example     |
+| ---- | ----------------------------------------------- | ----------- |
+| 0    | Length of the message (excluding this byte)     | `4` or more |
+| 1    | Command ID (see commands to ESP)                | `FILE_OPEN` |
+| 2    | Config                                          | `%zzzzzzzm` |
+|      | m: access mode (0: auto / 1: manual)            |             |
+|      | z: reserved for future use, must be set to zero |             |
 
-| Value | FILE_PATHS | Description                                     |
-| ----- | ---------- | ----------------------------------------------- |
-| 0     | SAVE       | Use this folder to load/save game data          |
-| 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
-| 2     | USER       | Use this folder to read/write data for the user |
+Using **auto mode**:  
+
+| Byte | Description                                | Example            |
+| ---- | ------------------------------------------ | ------------------ |
+| 3    | Path index (see [FILE_PATHS](#File-paths)) | `FILE_PATHS::SAVE` |
+| 4    | File index                                 | `5 (0 to 63)`      |
+
+Using **manual mode**:  
+
+| Byte | Description        | Example |
+| ---- | ------------------ | ------- |
+| 3    | File string length | `13`    |
+| 4    | File string        | `p`     |
+| 5    | ...                | `a`     |
+| 6    | ...                | `t`     |
+| 7    | ...                | `h`     |
+| 8    | ...                | `/`     |
+| 9    | ...                | `f`     |
+| 10   | ...                | `i`     |
+| 11   | ...                | `l`     |
+| 12   | ...                | `e`     |
+| 13   | ...                | `.`     |
+| 14   | ...                | `e`     |
+| 15   | ...                | `x`     |
+| 16   | ...                | `t`     |
 
 [Back to command list](#Commands-overview)
 
@@ -1017,6 +1060,7 @@ This command closes the working file.
 ### FILE_STATUS
 
 This command returns the working file status.  
+It can be used in auto mode (using predefined path index and filename index) or in manual mode (using path/filename string).  
 
 | Byte | Description                                 | Example       |
 | ---- | ------------------------------------------- | ------------- |
@@ -1025,14 +1069,45 @@ This command returns the working file status.
 
 **Returns:**
 
-| Byte | Description                                                | Example            |
-| ---- | ---------------------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte)                | `2` or `4`         |
-| 1    | Command ID (see commands from ESP)                         | `FILE_STATUS`      |
-| 2    | Returns 1 if a file is currently opened, 0 otherwise       | `0` or `1`         |
-|      | *the next bytes are send only if a file is currently open* |                    |
-| 3    | File path (see FILE_PATHS)                                 | `FILE_PATHS::SAVE` |
-| 4    | File index                                                 | `5 (0 to 63)`      |
+If a file is currently opened, the returned status details will be the same as the parameters used in the **FILE_OPEN** command to open the file.  
+
+Message first bytes:  
+
+| Byte | Description                                                     | Example       |
+| ---- | --------------------------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte)                     | `2` or more   |
+| 1    | Command ID (see commands from ESP)                              | `FILE_STATUS` |
+| 2    | File status (0: no file opened / 1: a file is currently opened) | `0` or `1`    |
+|      | **_next bytes are sent only if a file is currently opened_**    |               |
+| 3    | Config                                                          | `%zzzzzzzm`   |
+|      | m: access mode (0: auto / 1: manual)                            |               |
+|      | z: reserved for future use, must be set to zero                 |               |
+
+If file is opened in **auto mode**:  
+
+| Byte | Description                                | Example            |
+| ---- | ------------------------------------------ | ------------------ |
+| 4    | Path index (see [FILE_PATHS](#File-paths)) | `FILE_PATHS::SAVE` |
+| 5    | File index                                 | `5 (0 to 63)`      |
+
+If file is opened in **manual mode**:  
+
+| Byte | Description        | Example |
+| ---- | ------------------ | ------- |
+| 4    | File string length | `13`    |
+| 5    | File string        | `p`     |
+| 6    | ...                | `a`     |
+| 7    | ...                | `t`     |
+| 8    | ...                | `h`     |
+| 9    | ...                | `/`     |
+| 10   | ...                | `f`     |
+| 11   | ...                | `i`     |
+| 12   | ...                | `l`     |
+| 13   | ...                | `e`     |
+| 14   | ...                | `.`     |
+| 15   | ...                | `e`     |
+| 16   | ...                | `x`     |
+| 17   | ...                | `t`     |
 
 [Back to command list](#Commands-overview)
 
@@ -1041,30 +1116,52 @@ This command returns the working file status.
 ### FILE_EXISTS
 
 This command checks if a file exists.  
-This command returns 1 if the file exists, or 0 if it doesn't.  
+It can be used in auto mode (using predefined path index and filename index) or in manual mode (using path/filename string).  
+It returns 1 if the file exists, or 0 if it doesn't.  
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `3`                |
-| 1    | Command ID (see commands to ESP)            | `FILE_EXISTS`      |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
-| 3    | File index                                  | `5 (0 to 63)`      |
+Message first bytes:  
 
-**File paths:**
+| Byte | Description                                     | Example       |
+| ---- | ----------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte)     | `4` or more   |
+| 1    | Command ID (see commands to ESP)                | `FILE_EXISTS` |
+| 2    | Config                                          | `%zzzzzzzm`   |
+|      | m: access mode (0: auto / 1: manual)            |               |
+|      | z: reserved for future use, must be set to zero |               |
 
-| Value | FILE_PATHS | Description                                     |
-| ----- | ---------- | ----------------------------------------------- |
-| 0     | SAVE       | Use this folder to load/save game data          |
-| 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
-| 2     | USER       | Use this folder to read/write data for the user |
+Using **auto mode**:  
+
+| Byte | Description                                | Example            |
+| ---- | ------------------------------------------ | ------------------ |
+| 3    | Path index (see [FILE_PATHS](#File-paths)) | `FILE_PATHS::SAVE` |
+| 4    | File index                                 | `5 (0 to 63)`      |
+
+Using **manual mode**:  
+
+| Byte | Description        | Example |
+| ---- | ------------------ | ------- |
+| 4    | File string length | `13`    |
+| 5    | File string        | `p`     |
+| 6    | ...                | `a`     |
+| 7    | ...                | `t`     |
+| 8    | ...                | `h`     |
+| 9    | ...                | `/`     |
+| 10   | ...                | `f`     |
+| 11   | ...                | `i`     |
+| 12   | ...                | `l`     |
+| 13   | ...                | `e`     |
+| 14   | ...                | `.`     |
+| 15   | ...                | `e`     |
+| 16   | ...                | `x`     |
+| 17   | ...                | `t`     |
 
 **Returns:**
 
-| Byte | Description                                 | Example       |
-| ---- | ------------------------------------------- | ------------- |
-| 0    | Length of the message (excluding this byte) | `2`           |
-| 1    | Command ID (see commands from ESP)          | `FILE_EXISTS` |
-| 2    | Returns 1 if file exists, 0 otherwise       | `0` or `1`    |
+| Byte | Description                                           | Example       |
+| ---- | ----------------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte)           | `2`           |
+| 1    | Command ID (see commands from ESP)                    | `FILE_EXISTS` |
+| 2    | File status (0: file does not exist / 1: file exists) | `0` or `1`    |
 
 [Back to command list](#Commands-overview)
 
@@ -1073,21 +1170,43 @@ This command returns 1 if the file exists, or 0 if it doesn't.
 ### FILE_DELETE
 
 This command deletes (if exists) the file corresponding of the passed index.  
+It can be used in auto mode (using predefined path index and filename index) or in manual mode (using path/filename string).  
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `3`                |
-| 1    | Command ID (see commands to ESP)            | `FILE_DELETE`      |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
-| 3    | File index                                  | `5 (0 to 63)`      |
+Message first bytes:  
 
-**File paths:**
+| Byte | Description                                     | Example       |
+| ---- | ----------------------------------------------- | ------------- |
+| 0    | Length of the message (excluding this byte)     | `4` or more   |
+| 1    | Command ID (see commands to ESP)                | `FILE_DELETE` |
+| 2    | Config                                          | `%zzzzzzzm`   |
+|      | m: access mode (0: auto / 1: manual)            |               |
+|      | z: reserved for future use, must be set to zero |               |
 
-| Value | FILE_PATHS | Description                                     |
-| ----- | ---------- | ----------------------------------------------- |
-| 0     | SAVE       | Use this folder to load/save game data          |
-| 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
-| 2     | USER       | Use this folder to read/write data for the user |
+Using **auto mode**:  
+
+| Byte | Description                                | Example            |
+| ---- | ------------------------------------------ | ------------------ |
+| 3    | Path index (see [FILE_PATHS](#File-paths)) | `FILE_PATHS::SAVE` |
+| 4    | File index                                 | `5 (0 to 63)`      |
+
+Using **manual mode**:  
+
+| Byte | Description        | Example |
+| ---- | ------------------ | ------- |
+| 4    | File string length | `13`    |
+| 5    | File string        | `p`     |
+| 6    | ...                | `a`     |
+| 7    | ...                | `t`     |
+| 8    | ...                | `h`     |
+| 9    | ...                | `/`     |
+| 10   | ...                | `f`     |
+| 11   | ...                | `i`     |
+| 12   | ...                | `l`     |
+| 13   | ...                | `e`     |
+| 14   | ...                | `.`     |
+| 15   | ...                | `e`     |
+| 16   | ...                | `x`     |
+| 17   | ...                | `t`     |
 
 **Returns:**
 
@@ -1104,7 +1223,7 @@ This command deletes (if exists) the file corresponding of the passed index.
 | 0     | File successfully deleted             |
 | 1     | Error while trying to delete the file |
 | 2     | File does not exist                   |
-| 3     | Invalid path and/or file              |
+| 3     | Invalid path index and/or file index  |
 
 [Back to command list](#Commands-overview)
 
@@ -1161,13 +1280,13 @@ If there is no working file currently open, number of bytes will be 0.
 
 This command writes data to the working file.  
 
-| Byte | Description                                 | Example                                             |
-| ---- | ------------------------------------------- | --------------------------------------------------- |
-| 0    | Length of the message (excluding this byte) | `66`  (depends on how many bytes you want to write) |
-| 1    | Command ID (see commands to ESP)            | `FILE_WRITE`                                        |
-| 2    | Data                                        | `0x5F`                                              |
-| ...  | Data                                        | `...`                                               |
-| 66   | Data                                        | `0xAF`                                              |
+| Byte | Description                                 | Example                                            |
+| ---- | ------------------------------------------- | -------------------------------------------------- |
+| 0    | Length of the message (excluding this byte) | `66` (depends on how many bytes you want to write) |
+| 1    | Command ID (see commands to ESP)            | `FILE_WRITE`                                       |
+| 2    | Data                                        | `0x5F`                                             |
+| ...  | Data                                        | `...`                                              |
+| 66   | Data                                        | `0xAF`                                             |
 
 [Back to command list](#Commands-overview)
 
@@ -1193,19 +1312,33 @@ The current cursor position is not affected.
 ### FILE_COUNT
 
 This command sends the number of files in a specific path.  
+It can be used in auto mode (using predefined path index and filename index) or in manual mode (using path/filename string).  
 
-| Byte | Description                                 | Example      |
-| ---- | ------------------------------------------- | ------------ |
-| 0    | Length of the message (excluding this byte) | `1`          |
-| 1    | Command ID (see commands to ESP)            | `FILE_COUNT` |
+Message first bytes:  
 
-**File paths:**
+| Byte | Description                                     | Example      |
+| ---- | ----------------------------------------------- | ------------ |
+| 0    | Length of the message (excluding this byte)     | `4` or more  |
+| 1    | Command ID (see commands to ESP)                | `FILE_COUNT` |
+| 2    | Config                                          | `%zzzzzzzm`  |
+|      | m: access mode (0: auto / 1: manual)            |              |
+|      | z: reserved for future use, must be set to zero |              |
 
-| Value | FILE_PATHS | Description                                     |
-| ----- | ---------- | ----------------------------------------------- |
-| 0     | SAVE       | Use this folder to load/save game data          |
-| 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
-| 2     | USER       | Use this folder to read/write data for the user |
+Using **auto mode**:  
+
+| Byte | Description                                | Example            |
+| ---- | ------------------------------------------ | ------------------ |
+| 3    | Path index (see [FILE_PATHS](#File-paths)) | `FILE_PATHS::SAVE` |
+
+Using **manual mode**:  
+
+| Byte | Description        | Example |
+| ---- | ------------------ | ------- |
+| 3    | Path string length | `4`     |
+| 4    | Path string        | `p`     |
+| 5    | ...                | `a`     |
+| 6    | ...                | `t`     |
+| 7    | ...                | `h`     |
 
 [Back to command list](#Commands-overview)
 
@@ -1222,35 +1355,91 @@ This command sends the number of files in a specific path.
 ### FILE_GET_LIST
 
 Get list of existing files in a specific path.  
+It can be used in auto mode (using predefined path index) or in manual mode (using path string).  
+
+Message first bytes:  
+
+| Byte | Description                                     | Example         |
+| ---- | ----------------------------------------------- | --------------- |
+| 0    | Length of the message (excluding this byte)     | `3` or more     |
+| 1    | Command ID (see commands to ESP)                | `FILE_GET_LIST` |
+| 2    | Config                                          | `%zzzzzzzm`     |
+|      | m: access mode (0: auto / 1: manual)            |                 |
+|      | z: reserved for future use, must be set to zero |                 |
+
+Using **auto mode**:  
 
 | Byte | Description                                                          | Example            |
 | ---- | -------------------------------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte)                          | `2` or more        |
-| 1    | Command ID (see commands to ESP)                                     | `FILE_GET_LIST`    |
-| 2    | File path (see FILE_PATHS)                                           | `FILE_PATHS::SAVE` |
-|      | *the next bytes are required if you want to use a pagination system* |                    |
-| 3    | Page size (number of files per page)                                 | `9`                |
-| 4    | Current page (0 indexed)                                             | `1`                |
+| 3    | Path index (see [FILE_PATHS](#File-paths))                           | `FILE_PATHS::SAVE` |
+|      | **_next bytes are required if you want to use a pagination system_** |                    |
+| 4    | Page size (number of files per page)                                 | `9`                |
+| 5    | Current page (0 indexed)                                             | `1`                |
 
-**File paths:**
+Using **manual mode**:  
 
-| Value | FILE_PATHS | Description                                     |
-| ----- | ---------- | ----------------------------------------------- |
-| 0     | SAVE       | Use this folder to load/save game data          |
-| 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
-| 2     | USER       | Use this folder to read/write data for the user |
+| Byte | Description                                                          | Example |
+| ---- | -------------------------------------------------------------------- | ------- |
+| 3    | Item type(s) to return (0: files / 1: paths / 2: both)               | `2`     |
+| 4    | Path string length                                                   | `4`     |
+| 5    | Path string                                                          | `p`     |
+| 6    | ...                                                                  | `a`     |
+| 7    | ...                                                                  | `t`     |
+| 8    | ...                                                                  | `h`     |
+|      | **_next bytes are required if you want to use a pagination system_** |         |
+| 9    | Page size (number of files per page)                                 | `9`     |
+| 10   | Current page (0 indexed)                                             | `1`     |
+  
+**Notes:**
+- First *path string* byte can be `/` or empty for root  
+- Leading `/` is not required for a folder in root
+- Trailing `/` is not mandatory  
 
 **Returns:**
 
-| Byte | Description                                  | Example     |
-| ---- | -------------------------------------------- | ----------- |
-| 0    | Length of the message (excluding this byte)  | `2` or more |
-| 1    | Command ID (see commands from ESP)           | `FILE_LIST` |
-| 2    | Number of files                              | `3`         |
-|      | *next bytes are returned if files are found* |             |
-| 3    | File index                                   | `1`         |
-| 4    | File index                                   | `5`         |
-| 5    | File index                                   | `10`        |
+Message first bytes:  
+
+| Byte | Description                                      | Example     |
+| ---- | ------------------------------------------------ | ----------- |
+| 0    | Length of the message (excluding this byte)      | `2` or more |
+| 1    | Command ID (see commands from ESP)               | `FILE_LIST` |
+| 2    | Number of files                                  | `3`         |
+|      | **_next bytes are returned if files are found_** |             |
+
+Using **auto mode**:  
+
+| Byte | Description | Example |
+| ---- | ----------- | ------- |
+| 3    | File index  | `1`     |
+| 4    | File index  | `5`     |
+| 5    | File index  | `10`    |
+
+Using **manual mode**:  
+
+| Byte | Description        | Example      |
+| ---- | ------------------ | ------------ |
+| 3    | Item string length | `9`          |
+| 4    | Item string        | `f`          |
+| 5    | ...                | `i`          |
+| 6    | ...                | `l`          |
+| 7    | ...                | `e`          |
+| 8    | ...                | `1`          |
+| 9    | ...                | `.`          |
+| 10   | ...                | `e`          |
+| 11   | ...                | `x`          |
+| 12   | ...                | `t`          |
+| 13   | Item string length | `135` (0x87) |
+| 14   | Item string        | `s`          |
+| 15   | ...                | `u`          |
+| 16   | ...                | `b`          |
+| 17   | ...                | `p`          |
+| 18   | ...                | `a`          |
+| 19   | ...                | `t`          |
+| 20   | ...                | `h`          |
+
+**Notes:**
+- If bit 7 of the item string length is set, then it's a folder.  
+- The maximum number of returned items is 19 because of the message length limitation.  
 
 [Back to command list](#Commands-overview)
 
@@ -1258,30 +1447,22 @@ Get list of existing files in a specific path.
 
 ### FILE_GET_FREE_ID
 
-Get an unexisting file ID in a specific path.
+Get first free file ID in a specific predefined path.  
 
 | Byte | Description                                 | Example            |
 | ---- | ------------------------------------------- | ------------------ |
 | 0    | Length of the message (excluding this byte) | `2`                |
 | 1    | Command ID (see commands to ESP)            | `FILE_GET_FREE_ID` |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
-
-**File paths:**
-
-| Value | FILE_PATHS | Description                                     |
-| ----- | ---------- | ----------------------------------------------- |
-| 0     | SAVE       | Use this folder to load/save game data          |
-| 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
-| 2     | USER       | Use this folder to read/write data for the user |
+| 2    | Path index (see [FILE_PATHS](#File-paths))  | `FILE_PATHS::SAVE` |
 
 **Returns:**
 
-| Byte | Description                                        | Example     |
-| ---- | -------------------------------------------------- | ----------- |
-| 0    | Length of the message (excluding this byte)        | `1` or more |
-| 1    | Command ID (see commands from ESP)                 | `FILE_ID`   |
-|      | *next byte is returned if a free file ID is found* |             |
-| 2    | File ID                                            | `3`         |
+| Byte | Description                                            | Example    |
+| ---- | ------------------------------------------------------ | ---------- |
+| 0    | Length of the message (excluding this byte)            | `1` or `2` |
+| 1    | Command ID (see commands from ESP)                     | `FILE_ID`  |
+|      | **_next byte is returned if a free file ID is found_** |            |
+| 2    | File ID                                                | `3`        |
 
 [Back to command list](#Commands-overview)
 
@@ -1290,37 +1471,61 @@ Get an unexisting file ID in a specific path.
 ### FILE_GET_INFO
 
 This command returns file info (size in bytes and crc32).  
+It can be used in auto mode (using predefined path index and filename index) or in manual mode (using path/filename string).  
 
-| Byte | Description                                 | Example            |
-| ---- | ------------------------------------------- | ------------------ |
-| 0    | Length of the message (excluding this byte) | `3`                |
-| 1    | Command ID (see commands to ESP)            | `FILE_GET_INFO`    |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE` |
-| 3    | File index                                  | `5 (0 to 63)`      |
+Message first bytes:  
 
-**File paths:**
+| Byte | Description                                     | Example         |
+| ---- | ----------------------------------------------- | --------------- |
+| 0    | Length of the message (excluding this byte)     | `4` or more     |
+| 1    | Command ID (see commands to ESP)                | `FILE_GET_INFO` |
+| 2    | Config                                          | `%zzzzzzzm`     |
+|      | m: access mode (0: auto / 1: manual)            |                 |
+|      | z: reserved for future use, must be set to zero |                 |
 
-| Value | FILE_PATHS | Description                                     |
-| ----- | ---------- | ----------------------------------------------- |
-| 0     | SAVE       | Use this folder to load/save game data          |
-| 1     | ROMS       | Use this folder to dump/flash ROMS, patches     |
-| 2     | USER       | Use this folder to read/write data for the user |
+Using **auto mode**:  
+
+| Byte | Description                                | Example            |
+| ---- | ------------------------------------------ | ------------------ |
+| 3    | Path index (see [FILE_PATHS](#File-paths)) | `FILE_PATHS::SAVE` |
+| 4    | File index                                 | `5 (0 to 63)`      |
+
+Using **manual mode**:  
+
+| Byte | Description        | Example |
+| ---- | ------------------ | ------- |
+| 3    | File string length | `15`    |
+| 4    | File string        | `f`     |
+| 5    | ...                | `o`     |
+| 6    | ...                | `l`     |
+| 7    | ...                | `d`     |
+| 8    | ...                | `e`     |
+| 9    | ...                | `r`     |
+| 10   | ...                | `/`     |
+| 11   | ...                | `f`     |
+| 12   | ...                | `i`     |
+| 13   | ...                | `l`     |
+| 14   | ...                | `e`     |
+| 15   | ...                | `.`     |
+| 16   | ...                | `e`     |
+| 17   | ...                | `x`     |
+| 18   | ...                | `t`     |
 
 **Returns:**
 
-| Byte | Description                                 | Example     |
-| ---- | ------------------------------------------- | ----------- |
-| 0    | Length of the message (excluding this byte) | `1` or `9`  |
-| 1    | Command ID (see commands from ESP)          | `FILE_INFO` |
-|      | *next bytes are returned if file is  found* |             |
-| 2    | CRC32 MSB                                   | `3B`        |
-| 3    | CRC32                                       | `84`        |
-| 4    | CRC32                                       | `E6`        |
-| 5    | CRC32 LSB                                   | `FB`        |
-| 6    | Size MSB                                    | `00`        |
-| 7    | Size                                        | `00`        |
-| 8    | Size                                        | `10`        |
-| 9    | Size LSB                                    | `00`        |
+| Byte | Description                                    | Example     |
+| ---- | ---------------------------------------------- | ----------- |
+| 0    | Length of the message (excluding this byte)    | `1` or `9`  |
+| 1    | Command ID (see commands from ESP)             | `FILE_INFO` |
+|      | **_next bytes are returned if file is found_** |             |
+| 2    | CRC32 MSB                                      | `3B`        |
+| 3    | CRC32                                          | `84`        |
+| 4    | CRC32                                          | `E6`        |
+| 5    | CRC32 LSB                                      | `FB`        |
+| 6    | Size MSB                                       | `00`        |
+| 7    | Size                                           | `00`        |
+| 8    | Size                                           | `10`        |
+| 9    | Size LSB                                       | `00`        |
 
 [Back to command list](#Commands-overview)
 
@@ -1329,63 +1534,111 @@ This command returns file info (size in bytes and crc32).
 ### FILE_DOWNLOAD
 
 This command downloads a file from a specific URL to a specific path index / file index.  
+It can be used in auto mode (using predefined path index and filename index) or in manual mode (using path/filename string).  
 If the destination file exists, it'll be deleted.  
-The URL must use HTTP or HTTPS protocol.  
+The URL **must** use HTTP or HTTPS protocol.  
 
-| Byte | Description                                 | Example                          |
-| ---- | ------------------------------------------- | -------------------------------- |
-| 0    | Length of the message (excluding this byte) | `34` (depends on message length) |
-| 1    | Command ID (see commands to ESP)            | `FILE_DOWNLOAD`                  |
-| 2    | File path (see FILE_PATHS)                  | `FILE_PATHS::SAVE`               |
-| 3    | File ID                                     | `3`                              |
-| 4    | URL String                                  | `h`                              |
-| 5    | URL String                                  | `t`                              |
-| 6    | URL String                                  | `t`                              |
-| 7    | URL String                                  | `p`                              |
-| 8    | URL String                                  | `s`                              |
-| 9    | URL String                                  | `:`                              |
-| 10   | URL String                                  | `/`                              |
-| 11   | URL String                                  | `/`                              |
-| 12   | URL String                                  | `b`                              |
-| 13   | URL String                                  | `r`                              |
-| 14   | URL String                                  | `o`                              |
-| 15   | URL String                                  | `k`                              |
-| 16   | URL String                                  | `e`                              |
-| 17   | URL String                                  | `s`                              |
-| 18   | URL String                                  | `t`                              |
-| 19   | URL String                                  | `u`                              |
-| 20   | URL String                                  | `d`                              |
-| 21   | URL String                                  | `i`                              |
-| 22   | URL String                                  | `o`                              |
-| 23   | URL String                                  | `.`                              |
-| 24   | URL String                                  | `f`                              |
-| 25   | URL String                                  | `r`                              |
-| 26   | URL String                                  | `/`                              |
-| 27   | URL String                                  | `f`                              |
-| 28   | URL String                                  | `i`                              |
-| 29   | URL String                                  | `l`                              |
-| 30   | URL String                                  | `e`                              |
-| 31   | URL String                                  | `.`                              |
-| 32   | URL String                                  | `t`                              |
-| 33   | URL String                                  | `x`                              |
-| 34   | URL String                                  | `t`                              |
+Message first bytes:  
+
+| Byte | Description                                     | Example                          |
+| ---- | ----------------------------------------------- | -------------------------------- |
+| 0    | Length of the message (excluding this byte)     | `28` (depends on message length) |
+| 1    | Command ID (see commands to ESP)                | `FILE_DOWNLOAD`                  |
+| 2    | Config                                          | `%zzzzzzzm`                      |
+|      | m: access mode (0: auto / 1: manual)            |                                  |
+|      | z: reserved for future use, must be set to zero |                                  |
+| 3    | URL String length                               | `22`                             |
+| 4    | URL String (source)                             | `h`                              |
+| 5    | ...                                             | `t`                              |
+| 6    | ...                                             | `t`                              |
+| 7    | ...                                             | `p`                              |
+| 8    | ...                                             | `:`                              |
+| 9    | ...                                             | `/`                              |
+| 10   | ...                                             | `/`                              |
+| 11   | ...                                             | `u`                              |
+| 12   | ...                                             | `r`                              |
+| 13   | ...                                             | `l`                              |
+| 14   | ...                                             | `.`                              |
+| 15   | ...                                             | `f`                              |
+| 16   | ...                                             | `r`                              |
+| 17   | ...                                             | `/`                              |
+| 18   | ...                                             | `f`                              |
+| 19   | ...                                             | `i`                              |
+| 20   | ...                                             | `l`                              |
+| 21   | ...                                             | `e`                              |
+| 22   | ...                                             | `.`                              |
+| 23   | ...                                             | `t`                              |
+| 24   | ...                                             | `x`                              |
+| 25   | ...                                             | `t`                              |
+
+Using **auto mode**:  
+
+| Byte | Description                                | Example            |
+| ---- | ------------------------------------------ | ------------------ |
+| 26   | Path index (see [FILE_PATHS](#File-paths)) | `FILE_PATHS::SAVE` |
+| 27   | File ID                                    | `3`                |
+
+Using **manual mode**:  
+
+| Byte | Description               | Example |
+| ---- | ------------------------- | ------- |
+| 26   | File string length        | `13`    |
+| 27   | File string (destination) | `p`     |
+| 28   | ...                       | `a`     |
+| 29   | ...                       | `t`     |
+| 30   | ...                       | `h`     |
+| 31   | ...                       | `/`     |
+| 32   | ...                       | `f`     |
+| 33   | ...                       | `i`     |
+| 34   | ...                       | `l`     |
+| 35   | ...                       | `e`     |
+| 36   | ...                       | `.`     |
+| 37   | ...                       | `e`     |
+| 38   | ...                       | `x`     |
+| 39   | ...                       | `t`     |
 
 **Returns:**
 
-| Byte | Description                                 | Example         |
-| ---- | ------------------------------------------- | --------------- |
-| 0    | Length of the message (excluding this byte) | `2`             |
-| 1    | Command ID (see commands from ESP)          | `FILE_DOWNLOAD` |
-| 2    | Result code (see below)                     | `0`             |
+| Byte | Description                                       | Example         |
+| ---- | ------------------------------------------------- | --------------- |
+| 0    | Length of the message (excluding this byte)       | `4`             |
+| 1    | Command ID (see commands from ESP)                | `FILE_DOWNLOAD` |
+| 2    | Result code (see below)                           | `0`             |
+| 3    | HTTP status MSB                                   | `0x00`          |
+| 4    | HTTP status LSB or network error code (see notes) | `0xC8`          |
 
 **Result codes:**
 
-| Value | Description                        |
-| ----- | ---------------------------------- |
-| 0     | Success                            |
-| 1     | Error while deleting existing file |
-| 2     | Download failed                    |
-| 3     | Invalid path and/or file           |
+| Value | Description                                |
+| ----- | ------------------------------------------ |
+| 0     | Success (HTTP status in 2xx)               |
+| 1     | Invalid destination (path/filename)        |
+| 2     | Error while deleting existing file         |
+| 3     | Unknown / unsupported protocol             |
+| 4     | Network error (code in byte 4, see below ) |
+| 5     | HTTP status is not in 2xx                  |
+
+**Network error codes:**
+
+| Value | Description         |
+| ----- | ------------------- |
+| -1    | Connection failed   |
+| -2    | Send header failed  |
+| -3    | Send payload failed |
+| -4    | Not connected       |
+| -5    | Connection lost     |
+| -6    | No stream           |
+| -7    | No HTTP server      |
+| -8    | Too less RAM        |
+| -9    | Encoding            |
+| -10   | Stream write        |
+| -11   | Read timeout        |
+
+**Notes:**
+- Only HTTP and HTTPS protocols are supported.  
+- HTTP status in the returned message is valid only if result code is 0 or 5.  
+- If result code is 5, the body of the message is wrote on destination (as if the code was 0).  
+- If result code is 4, fourth byte of the returned message contained the network error code.  
 
 [Back to command list](#Commands-overview)
 
@@ -1394,7 +1647,7 @@ The URL must use HTTP or HTTPS protocol.
 ### FILE_FORMAT
 
 This command formats the file system.  
-Current configuration will be saved afterwards.  
+Current ESP configuration will be saved afterwards.  
 
 | Byte | Description                                 | Example       |
 | ---- | ------------------------------------------- | ------------- |
